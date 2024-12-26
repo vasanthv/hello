@@ -33,6 +33,10 @@ npm start
 
 to start the hello server on port 3000. Your hello instance will be running on http://localhost:3000.
 
+### Contributions
+
+Please refer <a href="https://github.com/vasanthv/hello/blob/master/markdowns/CONTRIBUTIONS.md">CONTRIBUTIONS.md</a> for more info.
+
 ### LICENSE
 
 <a href="https://github.com/vasanthv/hello/blob/master/LICENSE">MIT License</a>
