@@ -60,8 +60,8 @@ textarea {
 	display: block;
 	width: 100%;
 	padding: 0.5rem 1rem;
-	color: var(--background);
-	background: var(--text);
+	color: var(--text);
+	background: var(--background);
 	border-radius: 0.5rem;
 	box-sizing: border-box;
 	font-size: 1rem;
@@ -333,6 +333,7 @@ img.talking {
 }
 #chatwrap textarea {
 	color: var(--background);
+	background: var(--text);
 	border: 0.15rem solid var(--background-trans);
 }
 

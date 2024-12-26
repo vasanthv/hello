@@ -196,6 +196,4 @@ const App = Vue.createApp({
 	if ("serviceWorker" in navigator) {
 		navigator.serviceWorker.register("/sw.js");
 	}
-
-	App.initiateCall();
 })();
