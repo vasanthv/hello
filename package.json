@@ -1,6 +1,6 @@
 {
 	"name": "hello",
-	"version": "0.1.6",
+	"version": "1.0.0",
 	"description": "A free group video conference app for the web. No sign ups. No downloads.",
 	"main": "server.js",
 	"scripts": {

@@ -17,7 +17,7 @@
 				</header>
 
 				<section id="nameWrap" class="wrap mini" v-if="!callInitiated">
-					<div class="row">Please enter your name to join the video call</div>
+					<div class="row">Click join to enter the video call</div>
 					<div class="row">
 						<input
 							type="text"
@@ -29,17 +29,38 @@
 							maxlength="50"
 						/>
 					</div>
-					<footer>
-						<div class="wrap">
-							<div class="row">
-								<button v-if="!callInitiated" v-on:click="initiateCall">Join</button>
-							</div>
-						</div>
-					</footer>
+
+					<div class="row">
+						<select id="audioDevice" v-model="selectedAudioDeviceId">
+							<option
+								v-for="(audioDevice, i) in audioDevices"
+								v-bind:key="audioDevice.deviceId"
+								v-bind:value="audioDevice.deviceId"
+							>
+								{{audioDevice.label}}
+							</option>
+						</select>
+					</div>
+
+					<div class="row">
+						<select id="videoDevice" v-model="selectedVideoDeviceId">
+							<option
+								v-for="(videoDevice, i) in videoDevices"
+								v-bind:key="videoDevice.deviceId"
+								v-bind:value="videoDevice.deviceId"
+							>
+								{{videoDevice.label}}
+							</option>
+						</select>
+					</div>
+
+					<div class="row">
+						<button v-if="!callInitiated" v-on:click="initiateCall">Join</button>
+					</div>
 				</section>
 
 				<section v-if="callInitiated">
-					<div id="videos" v-bind:class="'peers-'+(peerKeys.length)">
+					<div id="videos">
 						<div class="video self">
 							<video v-bind:src-object.prop.camel="localMediaStream" autoplay muted></video>
 							<div class="name"><i v-bind:class="'icon-mic'+(audioEnabled ? '' : '-off')"></i> {{name}} (You)</div>

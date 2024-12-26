@@ -145,15 +145,10 @@ function setupLocalMedia(callback) {
 	}
 
 	navigator.mediaDevices
-		.getUserMedia({ audio: true, video: true })
+		.getUserMedia({ audio: { deviceId: App.selectedAudioDeviceId }, video: { deviceId: App.selectedVideoDeviceId } })
 		.then((stream) => {
 			App.localMediaStream = stream;
 			if (callback) callback();
-
-			navigator.mediaDevices.enumerateDevices().then((devices) => {
-				App.audioDevices = devices.filter((device) => device.kind === "audioinput" && device.deviceId !== "default");
-				App.videoDevices = devices.filter((device) => device.kind === "videoinput" && device.deviceId !== "default");
-			});
 		})
 		.catch((error) => {
 			console.error(error);

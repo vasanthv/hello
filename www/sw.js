@@ -2,7 +2,7 @@
  * Hello Service worker
  */
 
-const currentCacheName = "hello-v-~VERSION";
+const currentCacheName = "hello-v-~VERSION~";
 
 self.addEventListener("install", function (e) {
 	console.log("Install event triggered. New updates available.");

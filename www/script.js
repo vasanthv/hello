@@ -20,7 +20,8 @@ const App = Vue.createApp({
 			audioEnabled: true,
 			videoEnabled: true,
 			showSettings: false,
-			selectedAudioDeviceId: "",
+			selectedAudioDeviceId: null,
+			selectedVideoDeviceId: null,
 			name: name ?? window.localStorage.name,
 			callInitiated: false,
 			localMediaStream: null,
@@ -34,27 +35,26 @@ const App = Vue.createApp({
 	},
 	computed: {
 		peersArray() {
-			return Object.keys(this.peers).map((peer) => ({
-				stream: this.peers[peer].stream,
-				name: this.peers[peer].data.peerName,
-				isTalking: this.peers[peer].data.isTalking,
-			}));
-		},
-		peerKeys() {
-			return Object.keys(this.peers);
-		},
-		peerList() {
-			return Object.keys(this.peers).map((peer) => ({
-				name: this.peers[peer].data.peerName,
-				isTalking: this.peers[peer].data.isTalking,
-			}));
+			return Object.keys(this.peers).map((peer) => {
+				let isMuted = false;
+				if (this.peers[peer].stream) {
+					isMuted = this.peers[peer].stream.getAudioTracks()[0].muted;
+				}
+
+				return {
+					stream: this.peers[peer].stream,
+					name: this.peers[peer].data.peerName,
+					isTalking: this.peers[peer].data.isTalking,
+					isMuted,
+				};
+			});
 		},
 	},
 	methods: {
 		initiateCall() {
 			if (!this.channelId) return alert("Invalid channel id");
 
-			if (!this.name) return;
+			if (!this.name) return alert("Please enter your name");
 
 			this.callInitiated = true;
 			window.initiateCall();
@@ -154,27 +154,6 @@ const App = Vue.createApp({
 				this.peers[peerId].data.isTalking = isTalking;
 			}
 		},
-		changeMicrophone() {
-			const deviceId = this.selectedAudioDeviceId;
-			navigator.mediaDevices
-				.getUserMedia({ audio: { deviceId } })
-				.then((micStream) => {
-					for (let peer_id in this.peers) {
-						const sender = this.peers[peer_id]["rtc"]
-							.getSenders()
-							.find((s) => (s.track ? s.track.kind === "audio" : false));
-						sender.replaceTrack(micStream.getAudioTracks()[0]);
-					}
-					micStream.getAudioTracks()[0].enabled = this.audioEnabled;
-
-					const newStream = new MediaStream([micStream.getAudioTracks()[0]]);
-					this.localMediaStream = newStream;
-				})
-				.catch((err) => {
-					console.log(err);
-					this.setToast("Error while swaping microphone");
-				});
-		},
 		handleIncomingDataChannelMessage(dataMessage) {
 			if (!this.peers[dataMessage.peerId]) return;
 			switch (dataMessage.type) {
@@ -192,8 +171,20 @@ const App = Vue.createApp({
 	},
 }).mount("#app");
 
-(() => {
+(async () => {
 	if ("serviceWorker" in navigator) {
 		navigator.serviceWorker.register("/sw.js");
 	}
+
+	await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+	const devices = await navigator.mediaDevices.enumerateDevices();
+	App.audioDevices = devices.filter((device) => device.kind === "audioinput");
+	App.videoDevices = devices.filter((device) => device.kind === "videoinput");
+
+	// Set default device ids
+	const defaultAudioDeviceId = App.audioDevices.find((device) => device.deviceId == "default")?.deviceId;
+	const defaultVideoDeviceId = App.videoDevices.find((device) => device.deviceId == "default")?.deviceId;
+
+	App.selectedAudioDeviceId = defaultAudioDeviceId ?? App.audioDevices[0].deviceId;
+	App.selectedVideoDeviceId = defaultVideoDeviceId ?? App.videoDevices[0].deviceId;
 })();
