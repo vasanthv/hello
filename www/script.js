@@ -9,6 +9,7 @@ const App = Vue.createApp({
 		const searchParams = new URLSearchParams(window.location.search);
 
 		const name = searchParams.get("name");
+		const chatEnabled = searchParams.get("chat") !== "false";
 
 		return {
 			channelId,
@@ -27,6 +28,7 @@ const App = Vue.createApp({
 			localMediaStream: null,
 			peers: {},
 			dataChannels: {},
+			chatEnabled,
 			chats: [],
 			chatMessage: "",
 			showChat: false,
@@ -171,7 +173,22 @@ const App = Vue.createApp({
 	},
 }).mount("#app");
 
+const setTheme = (themeColor) => {
+	if (!themeColor) return null;
+	if (!/^[0-9A-F]{6}$/i.test(themeColor)) return alert("Invalid theme color");
+
+	const textColor = parseInt(themeColor, 16) > 0xffffff / 2 ? "#000" : "#fff";
+
+	document.documentElement.style.setProperty("--background", `#${themeColor}`);
+	document.documentElement.style.setProperty("--text", textColor);
+};
+
 (async () => {
+	const searchParams = new URLSearchParams(window.location.search);
+	const themeColor = searchParams.get("theme");
+
+	if (themeColor) setTheme(themeColor);
+
 	if ("serviceWorker" in navigator) {
 		navigator.serviceWorker.register("/sw.js");
 	}

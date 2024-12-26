@@ -13,7 +13,12 @@
 					<div class="title name flex-1">
 						<a href="javascript:void(0)" v-on:click="copyURL">#{{channelId}}</a>
 					</div>
-					<a href="javascript:void(0)" class="icon-message-circle" v-on:click="showChat=true" v-if="callInitiated"></a>
+					<a
+						href="javascript:void(0)"
+						class="icon-message-circle"
+						v-on:click="showChat=true"
+						v-if="chatEnabled && callInitiated"
+					></a>
 				</header>
 
 				<section id="nameWrap" class="wrap mini" v-if="!callInitiated">
@@ -85,7 +90,7 @@
 						<div id="chats">
 							<div class="chat" v-for="(chat, i) in chats" v-bind:key="i">
 								<span class="name">{{chat.name}}</span>
-								<span class="date light"> &middot; {{formatDate(chat.date)}}</span>
+								<span class="date light small"> &middot; {{formatDate(chat.date)}}</span>
 								<div class="message" v-html="linkify(chat.message)"></div>
 							</div>
 							<div id="noChat" class="light" v-if="!chats.length"><small>No chat messages.</small></div>

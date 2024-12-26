@@ -2,13 +2,13 @@
 
 :root {
 	--background: #101010;
-	--background-trans: rgba(50, 50, 50, 0.6);
 	--text: #efefef;
-	--text-light: #a8a8a8;
-	--blue: #2980b9;
+
+	--background-trans: rgba(50, 50, 50, 0.6);
 	--red: #c0392b;
 	--green: #27ae60;
-	--gray: #434343;
+
+	--black: #000;
 	--white: #fff;
 }
 
@@ -89,31 +89,16 @@ button:active,
 button:focus {
 	text-decoration: underline;
 }
-button.ptt {
-	display: block;
+::placeholder {
 	color: var(--text);
-	margin: auto;
-	width: 5rem;
-	height: 5rem;
-	padding: 0px;
-	transition: box-shadow 0.1s ease-in;
-	box-shadow: 0rem 0rem 1rem 1rem var(--background);
-	border: 0.75rem solid var(--text);
-	border-radius: 50%;
-	background: var(--background);
-}
-button.ptt.active {
-	transform: translateY(0rem);
-	color: var(--green);
-	border-color: var(--green);
-	box-shadow: 0rem 0rem 10rem 2rem var(--green);
+	opacity: 0.75;
 }
 
 .bold {
 	font-weight: bold;
 }
 .light {
-	color: var(--text-light);
+	opacity: 0.8;
 }
 .red {
 	color: var(--red);
@@ -255,14 +240,14 @@ img.talking {
 	bottom: 0.5rem;
 	left: 0.5rem;
 	background: var(--background-trans);
-	color: var(--text);
+	color: var(--white);
 	font-size: small;
 	padding: 0.1rem 0.25rem;
 	border-radius: 0.2rem;
 	z-index: 5;
 }
 #videos .video .name i.green {
-	color: green;
+	color: var(--green);
 }
 #videos .video .buttons {
 	position: absolute;
@@ -328,13 +313,17 @@ img.talking {
 	border-radius: 1rem;
 }
 #chatwrap #chats {
+	color: var(--black);
 	flex: 1;
 	overflow-y: auto;
 }
 #chatwrap textarea {
-	color: var(--background);
-	background: var(--text);
+	color: var(--black);
+	background: var(--white);
 	border: 0.15rem solid var(--background-trans);
+}
+#chatwrap textarea::placeholder {
+	color: var(--background-trans);
 }
 
 @media only screen and (max-width: 600px) {
