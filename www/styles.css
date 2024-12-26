@@ -150,10 +150,6 @@ button:focus {
 .flex-1 {
 	flex: 1;
 }
-img.talking {
-	height: 1rem;
-	margin-left: 0.25rem;
-}
 
 #joinBox {
 	position: relative;
