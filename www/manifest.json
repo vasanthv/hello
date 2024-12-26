@@ -1,0 +1,29 @@
+{
+	"name": "Hello",
+	"short_name": "Hello",
+	"description": "A video chat app for the web.",
+	"icons": [
+		{
+			"src": "icon.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "icon-maskable.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		},
+		{
+			"src": "favicon.svg",
+			"sizes": "48x48 72x72 96x96 128x128 150x150 256x256 512x512",
+			"type": "image/svg+xml",
+			"purpose": "any"
+		}
+	],
+	"theme_color": "#000",
+	"background_color": "#000",
+	"display": "standalone",
+	"start_url": "/"
+}

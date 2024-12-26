@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+	<%- include('head'); -%>
+
+	<body>
+		<div class="wrap">
+			<div class="row"><a href="/" class="small light">&larr; Back to home</a></div>
+			<br />
+			<div class="row title">Privacy</div>
+
+			<div class="row">
+				<p>
+					At Hello, we prioritize your privacy by collecting only the minimal amount of data necessary to ensure a
+					seamless user experience. Specifically, we collect:
+				</p>
+
+				<ol>
+					<li>
+						<span class="bold">RTCICECandidates</span> & <span class="bold">RTCSessionDescription</span>: These are
+						essential for establishing audio calls using WebRTC. This data is not stored in any persistent database and
+						is removed from the server immediately after you close the browser window.
+					</li>
+					<li>
+						<span class="bold">Your Name</span>: This is used for identification within the app and is stored locally on
+						your browser.
+					</li>
+				</ol>
+				<br />
+				<label>Key Points:</label>
+				<ul>
+					<li>All audio chats are 100% peer-to-peer, meaning they never touch our servers.</li>
+					<li>Hello is purely peer-to-peer, ensuring your audio is not sent to our server.</li>
+					<li>We use Cabin Analytics to track aggregated usage statistics for service improvement.</li>
+				</ul>
+
+				<p>The creators of Hello are committed to never using or selling your personal data.</p>
+			</div>
+
+			<div class="row">
+				<h3>Legal</h3>
+				<p>
+					This service is offered on an "as is" basis, subject to whimsical change or sudden discontinuation without
+					prior notice; think of it as a digital magician's disappearing act. The creators of this service shall not be
+					held liable for any reason, including but not limited to acts of God, rogue asteroids, or your cat deciding to
+					moonwalk on your keyboard. Use at your own delightful peril.
+				</p>
+			</div>
+
+			<%- include('footer'); -%>
+		</div>
+	</body>
+</html>

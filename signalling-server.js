@@ -1,32 +1,12 @@
 /**
  * A simple signalling server implementation using socket.io.
  * This socket connection is used a signalling server as WebRTC does not support discovery of other peers.
- * User's audio, video & chat messages does not use this socket.
+ * User's audio, video or chat messages does not use this socket.
  */
-
-const express = require("express");
-const http = require("http");
-const app = express();
-const server = http.createServer(app);
-const io = require("socket.io")(server, {
-	cors: { origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",") : "*" },
-});
-
-const util = require("util");
-
-// Get PORT from env variable else assign 3000 for development
-const PORT = process.env.PORT || 3000;
-
-server.listen(PORT, null, () => {
-	console.log("Talk server started");
-	console.log({ port: PORT, node_version: process.versions.node });
-});
 
 const channels = {};
 const sockets = {};
 const peers = {};
-
-const options = { depth: null, colors: true };
 
 const signallingServer = (socket) => {
 	const clientAddress = socket.handshake.address;
@@ -44,25 +24,17 @@ const signallingServer = (socket) => {
 	});
 
 	socket.on("join", (config) => {
-		console.log("[" + socket.id + "] join ", config);
-		const channel = clientAddress + config.channel;
+		console.log("[" + socket.id + "] joined. Channel: ", config.channel);
+		const channel = config.channel;
 
 		// Already Joined
 		if (channel in socket.channels) return;
 
-		if (!(channel in channels)) {
-			channels[channel] = {};
-		}
+		if (!(channel in channels)) channels[channel] = {};
 
-		if (!(channel in peers)) {
-			peers[channel] = {};
-		}
+		if (!(channel in peers)) peers[channel] = {};
 
-		peers[channel][socket.id] = {
-			userData: config.userData,
-		};
-
-		console.log("[" + socket.id + "] join - connected peers grouped by channel", util.inspect(peers, options));
+		peers[channel][socket.id] = { userData: config.userData };
 
 		for (const id in channels[channel]) {
 			channels[channel][id].emit("addPeer", {
@@ -86,7 +58,6 @@ const signallingServer = (socket) => {
 				peers[channel][id]["userData"][key] = value;
 			}
 		}
-		console.log("[" + socket.id + "] updateUserData", util.inspect(peers[channel][socket.id], options));
 	});
 
 	const part = (channel) => {
@@ -101,7 +72,6 @@ const signallingServer = (socket) => {
 			// last peer disconnected from the channel
 			delete peers[channel];
 		}
-		console.log("[" + socket.id + "] part - connected peers grouped by channel", util.inspect(peers, options));
 
 		for (const id in channels[channel]) {
 			channels[channel][id].emit("removePeer", { peer_id: socket.id });
@@ -131,4 +101,4 @@ const signallingServer = (socket) => {
 	});
 };
 
-io.sockets.on("connection", signallingServer);
+module.exports = signallingServer;
