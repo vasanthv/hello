@@ -10,6 +10,7 @@ const App = Vue.createApp({
 
 		const name = searchParams.get("name");
 		const chatEnabled = searchParams.get("chat") !== "false";
+		const showHeader = searchParams.get("header") !== "false";
 
 		return {
 			channelId,
@@ -28,6 +29,7 @@ const App = Vue.createApp({
 			localMediaStream: null,
 			peers: {},
 			dataChannels: {},
+			showHeader,
 			chatEnabled,
 			chats: [],
 			chatMessage: "",

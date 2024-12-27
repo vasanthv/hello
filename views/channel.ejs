@@ -9,7 +9,7 @@
 					{{toast.message}}
 				</section>
 
-				<header class="row flex">
+				<header class="row flex" v-if="showHeader">
 					<div class="title name flex-1">
 						<a href="javascript:void(0)" v-on:click="copyURL">#{{channelId}}</a>
 					</div>
