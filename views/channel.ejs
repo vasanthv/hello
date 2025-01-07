@@ -67,7 +67,7 @@
 				<section v-if="callInitiated">
 					<div id="videos">
 						<div class="video self">
-							<video v-bind:src-object.prop.camel="localMediaStream" autoplay muted></video>
+							<video v-bind:src-object.prop.camel="localMediaStream" autoplay muted playsinline></video>
 							<div class="name"><i v-bind:class="'icon-mic'+(audioEnabled ? '' : '-off')"></i> {{name}} (You)</div>
 							<div class="buttons">
 								<button v-bind:class="'icon-mic'+(audioEnabled ? '' : '-off')" v-on:click="toggleAudio"></button>
@@ -75,7 +75,7 @@
 							</div>
 						</div>
 						<div class="video" v-for="(peer, i) in peersArray" v-bind:key="peerKey">
-							<video v-bind:src-object.prop.camel="peer.stream" autoplay></video>
+							<video v-bind:src-object.prop.camel="peer.stream" autoplay playsinline></video>
 							<div class="name">
 								<i v-bind:class="'icon-mic'+(peer.isMuted ? '-off' : '')+' '+(peer.isTalking ? 'green' : '')"></i>
 								{{peer.name}}
