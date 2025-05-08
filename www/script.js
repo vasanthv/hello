@@ -99,17 +99,14 @@ const App = Vue.createApp({
 			this.updateUserData("peerName", this.name);
 		},
 		updateUserData(key, value) {
-			this.sendDataMessage(key, value);
+			this.broadcastMessage(key, value);
 		},
 		formatDate(dateString) {
 			const date = new Date(dateString);
 			const hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
 			return (
-				(hours < 10 ? "0" + hours : hours) +
-				":" +
-				(date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) +
-				" " +
-				(date.getHours() >= 12 ? "PM" : "AM")
+				`${hours.toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")} ${date.getHours() >= 12 ? "PM" : "AM"}`
+				
 			);
 		},
 		sanitizeString(str) {
@@ -133,13 +130,13 @@ const App = Vue.createApp({
 			if (!this.chatMessage.length) return;
 
 			if (Object.keys(this.peers).length > 0) {
-				this.sendDataMessage("chat", this.chatMessage);
+				this.broadcastMessage("chat", this.chatMessage);
 				this.chatMessage = "";
 			} else {
 				alert("No peers in the room");
 			}
 		},
-		sendDataMessage(key, value) {
+		broadcastMessage(key, value) {
 			const date = new Date().toISOString();
 			const dataMessage = { type: key, name: this.name, peerId: this.peerId, message: value, date };
 
