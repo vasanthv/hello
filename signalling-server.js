@@ -1,7 +1,7 @@
 /**
  * A simple signalling server implementation using socket.io.
- * This socket connection is used a signalling server as WebRTC does not support discovery of other peers.
- * User's audio, video or chat messages does not use this socket.
+ * This socket connection is used as a signalling server, as WebRTC does not support discovery of other peers.
+ * User's audio, video, or chat messages do not use this socket.
  */
 
 const channels = {};
@@ -17,7 +17,7 @@ const signallingServer = (socket) => {
 	console.log("[" + socket.id + "] connection accepted");
 	socket.on("disconnect", () => {
 		for (const channel in socket.channels) {
-			part(channel);
+			leaveChannel(channel);
 		}
 		console.log("[" + socket.id + "] disconnected");
 		delete sockets[socket.id];
@@ -60,7 +60,7 @@ const signallingServer = (socket) => {
 		}
 	});
 
-	const part = (channel) => {
+	const leaveChannel = (channel) => {
 		// Socket not in channel
 		if (!(channel in socket.channels)) return;
 
