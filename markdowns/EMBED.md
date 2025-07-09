@@ -1,12 +1,12 @@
-# Hello embed
+# Ahey embed
 
-Hello can be embedded in any webpage using iFrame as shown below. [Demo link](https://hello-demo-embed.surge.sh/)
+Ahey can be embedded in any webpage using iFrame as shown below. [Demo link](https://ahey-demo-embed.surge.sh/)
 
 ```
-<iframe src="https://hello.vasanthv.me/your-channel-here?nameJohn&theme=F22952" allow="camera; microphone" seamless width="480" height="640" frameBorder="0"></iframe>
+<iframe src="https://ahey.net/your-channel-here?nameJohn&theme=F22952" allow="camera; microphone" seamless width="480" height="640" frameBorder="0"></iframe>
 ```
 
-Hello supports the following URL params.
+Ahey supports the following URL params.
 
 | Param  | Description                            | Type    | Example  | Default |
 | ------ | -------------------------------------- | ------- | -------- | ------- |
