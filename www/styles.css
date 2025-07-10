@@ -245,6 +245,16 @@ button:focus {
 #videos .video .name i.green {
 	color: var(--green);
 }
+
+.screen-share-indicator {
+	display: inline-block;
+	margin-left: 0.5rem;
+	font-size: 0.8rem;
+	color: var(--green);
+	background: rgba(39, 174, 96, 0.2);
+	padding: 0.1rem 0.3rem;
+	border-radius: 0.2rem;
+}
 #videos .video .buttons {
 	position: absolute;
 	z-index: 5;
@@ -252,7 +262,7 @@ button:focus {
 	right: 0rem;
 	left: 0rem;
 	margin: auto;
-	width: 6rem;
+	width: 9rem;
 	display: flex;
 	justify-content: space-around;
 }
@@ -271,6 +281,16 @@ button:focus {
 #videos .video .buttons button:active,
 #videos .video .buttons button:focus {
 	text-decoration: none;
+}
+
+#videos .video .buttons button.active {
+	background-color: var(--green);
+	border-color: var(--green);
+	color: var(--white);
+}
+
+.screen-share-btn {
+	font-size: 1.2rem;
 }
 #videos .video video {
 	width: 100%;
@@ -322,8 +342,44 @@ button:focus {
 	color: var(--background-trans);
 }
 
+.device-controls {
+	margin: 1rem;
+	padding: 1rem;
+	background: var(--background-trans);
+	border-radius: 0.5rem;
+	border: 0.15rem solid var(--text);
+}
+
+.device-controls .row {
+	margin: 0.5rem 0;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.device-controls label {
+	font-size: 0.9rem;
+	min-width: 100px;
+}
+
+.device-controls select {
+	flex: 1;
+	font-size: 0.9rem;
+	padding: 0.4rem 0.8rem;
+}
+
 @media only screen and (max-width: 600px) {
 	html {
 		font-size: 1rem;
+	}
+
+	.device-controls .row {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0.25rem;
+	}
+
+	.device-controls label {
+		min-width: auto;
 	}
 }

@@ -30,6 +30,7 @@ window.initiateCall = () => {
 			App.peers[peer_id]["rtc"].close();
 		}
 		App.peers = {};
+		App.cleanupScreenShare();
 	});
 
 	const joinChatChannel = (channel, userData) => signalingSocket.emit("join", { channel, userData });
@@ -51,12 +52,16 @@ window.initiateCall = () => {
 			}
 		};
 
-		peerConnection.onaddstream = (event) => {
+		// Modern WebRTC: use ontrack instead of onaddstream
+		peerConnection.ontrack = (event) => {
 			if (!App.peers[peer_id]["data"].userAgent) return;
-			App.peers[peer_id]["stream"] = event.stream;
+			const stream = event.streams[0];
+			App.peers[peer_id]["stream"] = stream;
 
-			// Used talk detection from https://www.linkedin.com/pulse/webrtc-active-speaker-detection-nilesh-gawande/
-			handleAudioStream(event.stream, peer_id);
+			// Only handle audio stream if it contains audio tracks and not already handled
+			if (stream.getAudioTracks().length > 0 && !audioStreams.has(peer_id)) {
+				handleAudioStream(stream, peer_id);
+			}
 		};
 
 		peerConnection.ondatachannel = (event) => {
@@ -69,7 +74,12 @@ window.initiateCall = () => {
 			};
 		};
 
-		peerConnection.addStream(App.localMediaStream);
+		// Modern WebRTC: add tracks instead of addStream
+		if (App.localMediaStream) {
+			App.localMediaStream.getTracks().forEach((track) => {
+				peerConnection.addTrack(track, App.localMediaStream);
+			});
+		}
 		App.dataChannels[peer_id] = peerConnection.createDataChannel("ot__data_channel");
 
 		if (config.should_create_offer) {
