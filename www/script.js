@@ -64,11 +64,17 @@ const App = Vue.createApp({
 	},
 	watch: {
 		selectedAudioDeviceId(newDeviceId, oldDeviceId) {
+			if (!this.callInitiated && newDeviceId !== oldDeviceId) {
+				this.getPreCallMedia();
+			}
 			if (newDeviceId !== oldDeviceId && this.callInitiated) {
 				this.switchAudioDevice(newDeviceId);
 			}
 		},
 		selectedVideoDeviceId(newDeviceId, oldDeviceId) {
+			if (!this.callInitiated && newDeviceId !== oldDeviceId) {
+				this.getPreCallMedia();
+			}
 			if (newDeviceId !== oldDeviceId && this.callInitiated) {
 				this.switchVideoDevice(newDeviceId);
 			}
@@ -323,9 +329,8 @@ const App = Vue.createApp({
 
 		initiateCall() {
 			if (!this.channelId) return alert("Invalid channel id");
-
 			if (!this.name) return alert("Please enter your name");
-
+			if (!this.videoEnabled && !this.audioEnabled) return alert("Please enable either audio or video");
 			this.callInitiated = true;
 			window.initiateCall();
 		},
@@ -481,10 +486,12 @@ const App = Vue.createApp({
 		togglePreCallAudio(e) {
 			e.stopPropagation();
 			this.audioEnabled = !this.audioEnabled;
+			this.getPreCallMedia();
 		},
 		togglePreCallVideo(e) {
 			e.stopPropagation();
 			this.videoEnabled = !this.videoEnabled;
+			this.getPreCallMedia();
 		},
 		stopEvent(e) {
 			e.preventDefault();
@@ -571,6 +578,30 @@ const App = Vue.createApp({
 					break;
 			}
 		},
+		async getPreCallMedia() {
+			try {
+				if (this.localMediaStream) {
+					this.localMediaStream.getTracks().forEach((track) => track.stop());
+				}
+				const constraints = {
+					audio: this.audioEnabled ? { deviceId: this.selectedAudioDeviceId } : false,
+					video: this.videoEnabled ? { deviceId: this.selectedVideoDeviceId } : false,
+				};
+				const stream = await navigator.mediaDevices.getUserMedia(constraints);
+				this.localMediaStream = stream;
+				const videoElem = document.getElementById("preCallVideo");
+				if (videoElem) {
+					videoElem.srcObject = stream;
+				}
+			} catch {
+				this.setToast("Unable to access camera/mic");
+			}
+		},
+	},
+	mounted() {
+		if (!this.callInitiated) {
+			this.getPreCallMedia();
+		}
 	},
 }).mount("#app");
 

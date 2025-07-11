@@ -19,6 +19,11 @@
 
 				<section id="nameWrap" class="wrap mini" v-if="!callInitiated">
 					<div class="row">Click join to enter the video call</div>
+					<!-- Video preview row -->
+					<div class="row" style="justify-content: center;">
+						<video id="preCallVideo" style="width: 240px; height: 180px; background: #222; border-radius: 8px;" autoplay
+							muted playsinline></video>
+					</div>
 					<div class="row">
 						<input type="text" id="myName" v-model="name" v-on:keyup="updateName" v-on:keyup.enter="initiateCall"
 							placeholder="Your name" maxlength="50" />
