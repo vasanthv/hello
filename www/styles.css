@@ -292,6 +292,42 @@ button:focus {
 .screen-share-btn {
 	font-size: 1.2rem;
 }
+
+.pre-call-controls {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	margin: 1rem 0;
+}
+
+.control-btn {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1rem;
+	border: 2px solid var(--background);
+	border-radius: 0.5rem;
+	background: var(--white);
+	color: var(--background);
+	cursor: pointer;
+	transition: all 0.2s ease;
+	font-size: 0.9rem;
+}
+
+.control-btn:hover {
+	background: var(--background);
+	color: var(--white);
+}
+
+.control-btn.active {
+	background: var(--green);
+	border-color: var(--green);
+	color: var(--white);
+}
+
+.control-btn i {
+	font-size: 1.1rem;
+}
 #videos .video video {
 	width: 100%;
 	height: 100%;

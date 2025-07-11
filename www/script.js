@@ -44,7 +44,10 @@ const App = Vue.createApp({
 			return Object.keys(this.peers).map((peer) => {
 				let isMuted = false;
 				if (this.peers[peer].stream) {
-					isMuted = this.peers[peer].stream.getAudioTracks()[0].muted;
+					const audioTracks = this.peers[peer].stream.getAudioTracks();
+					if (audioTracks.length > 0) {
+						isMuted = audioTracks[0].muted;
+					}
 				}
 
 				return {
@@ -94,23 +97,9 @@ const App = Vue.createApp({
 					}
 				}
 
-				// Replace the audio track in the local stream
+				// Replace audio track using the consolidated function
 				const newAudioTrack = newStream.getAudioTracks()[0];
-				if (this.localMediaStream && newAudioTrack) {
-					this.localMediaStream.removeTrack(this.localMediaStream.getAudioTracks()[0]);
-					this.localMediaStream.addTrack(newAudioTrack);
-				}
-
-				// Update all peer connections with the new audio track
-				Object.keys(this.peers).forEach((peerId) => {
-					const peerConnection = this.peers[peerId].rtc;
-					const senders = peerConnection.getSenders();
-					const audioSender = senders.find((sender) => sender.track && sender.track.kind === "audio");
-
-					if (audioSender) {
-						audioSender.replaceTrack(newAudioTrack);
-					}
-				});
+				this.replaceAudioTrack(newAudioTrack);
 
 				this.setToast("Audio device changed successfully", "success");
 			} catch (error) {
@@ -135,28 +124,105 @@ const App = Vue.createApp({
 					}
 				}
 
-				// Replace the video track in the local stream
+				// Replace video track using the consolidated function
 				const newVideoTrack = newStream.getVideoTracks()[0];
-				if (this.localMediaStream && newVideoTrack) {
-					this.localMediaStream.removeTrack(this.localMediaStream.getVideoTracks()[0]);
-					this.localMediaStream.addTrack(newVideoTrack);
-				}
-
-				// Update all peer connections with the new video track
-				Object.keys(this.peers).forEach((peerId) => {
-					const peerConnection = this.peers[peerId].rtc;
-					const senders = peerConnection.getSenders();
-					const videoSender = senders.find((sender) => sender.track && sender.track.kind === "video");
-
-					if (videoSender) {
-						videoSender.replaceTrack(newVideoTrack);
-					}
-				});
+				this.replaceVideoTrack(newVideoTrack);
 
 				this.setToast("Video device changed successfully", "success");
 			} catch (error) {
 				console.error("Error switching video device:", error);
 				this.setToast("Failed to switch video device");
+			}
+		},
+
+		// Helper function to trigger renegotiation for a specific peer
+		async triggerRenegotiation(peerId) {
+			try {
+				console.log(`Triggering renegotiation for peer ${peerId}`);
+				const peerConnection = this.peers[peerId].rtc;
+
+				const offer = await peerConnection.createOffer();
+				await peerConnection.setLocalDescription(offer);
+
+				// Send the offer through the signaling server
+				if (window.signalingSocket) {
+					window.signalingSocket.emit("relaySessionDescription", {
+						peer_id: peerId,
+						session_description: offer,
+					});
+				}
+			} catch (error) {
+				console.error(`Error during renegotiation for peer ${peerId}:`, error);
+			}
+		},
+
+		// Consolidated function to replace video tracks across all peer connections and local media stream
+		replaceVideoTrack(newVideoTrack) {
+			console.log("replaceVideoTrack called with track:", newVideoTrack);
+			console.log("Number of peers:", Object.keys(this.peers).length);
+
+			// Replace video track in all peer connections
+			Object.keys(this.peers).forEach((peerId) => {
+				const peerConnection = this.peers[peerId].rtc;
+				const senders = peerConnection.getSenders();
+				console.log(
+					`Peer ${peerId} senders:`,
+					senders.map((s) => ({ kind: s.track?.kind, track: s.track }))
+				);
+
+				const videoSender = senders.find((sender) => sender.track && sender.track.kind === "video");
+
+				if (videoSender) {
+					console.log(`Peer ${peerId}: Replacing existing video track`);
+					// Replace existing video track
+					videoSender.replaceTrack(newVideoTrack);
+				} else {
+					console.log(`Peer ${peerId}: Adding new video track`);
+					// No existing video sender, add new video track
+					peerConnection.addTrack(newVideoTrack, this.localMediaStream);
+					// Trigger renegotiation for this peer
+					this.triggerRenegotiation(peerId);
+				}
+			});
+
+			// Update local video element
+			if (this.localMediaStream) {
+				const oldVideoTrack = this.localMediaStream.getVideoTracks()[0];
+				if (oldVideoTrack) {
+					console.log("Removing old video track from local media stream");
+					this.localMediaStream.removeTrack(oldVideoTrack);
+				}
+				console.log("Adding new video track to local media stream");
+				this.localMediaStream.addTrack(newVideoTrack);
+			}
+		},
+
+		// Consolidated function to replace audio tracks across all peer connections and local media stream
+		replaceAudioTrack(newAudioTrack) {
+			// Replace audio track in all peer connections
+			Object.keys(this.peers).forEach((peerId) => {
+				const peerConnection = this.peers[peerId].rtc;
+				const senders = peerConnection.getSenders();
+				const audioSender = senders.find((sender) => sender.track && sender.track.kind === "audio");
+
+				if (audioSender) {
+					// Replace existing audio track
+					audioSender.replaceTrack(newAudioTrack);
+				} else {
+					// No existing audio sender, add new audio track
+					peerConnection.addTrack(newAudioTrack, this.localMediaStream);
+					// Trigger renegotiation for this peer
+					this.triggerRenegotiation(peerId);
+				}
+			});
+
+			// Update local media stream
+			if (this.localMediaStream) {
+				const oldAudioTrack = this.localMediaStream.getAudioTracks()[0];
+				if (oldAudioTrack) {
+					this.localMediaStream.removeTrack(oldAudioTrack);
+				}
+				this.localMediaStream.addTrack(newAudioTrack);
 			}
 		},
 
@@ -186,26 +252,9 @@ const App = Vue.createApp({
 					this.stopScreenShare();
 				};
 
-				// Replace video track in all peer connections
+				// Replace video track with screen share track
 				const screenVideoTrack = screenStream.getVideoTracks()[0];
-				Object.keys(this.peers).forEach((peerId) => {
-					const peerConnection = this.peers[peerId].rtc;
-					const senders = peerConnection.getSenders();
-					const videoSender = senders.find((sender) => sender.track && sender.track.kind === "video");
-
-					if (videoSender) {
-						videoSender.replaceTrack(screenVideoTrack);
-					}
-				});
-
-				// Update local video element to show screen share
-				if (this.localMediaStream) {
-					const oldVideoTrack = this.localMediaStream.getVideoTracks()[0];
-					if (oldVideoTrack) {
-						this.localMediaStream.removeTrack(oldVideoTrack);
-					}
-					this.localMediaStream.addTrack(screenVideoTrack);
-				}
+				this.replaceVideoTrack(screenVideoTrack);
 
 				this.setToast("Screen sharing started", "success");
 			} catch (error) {
@@ -241,27 +290,10 @@ const App = Vue.createApp({
 				});
 
 				console.log(newVideoStream);
-				// Replace video track in all peer connections
+				// Replace video track with camera track
 				const newVideoTrack = newVideoStream.getVideoTracks()[0];
 				console.log(newVideoTrack);
-				Object.keys(this.peers).forEach((peerId) => {
-					const peerConnection = this.peers[peerId].rtc;
-					const senders = peerConnection.getSenders();
-					const videoSender = senders.find((sender) => sender.track && sender.track.kind === "video");
-
-					if (videoSender) {
-						videoSender.replaceTrack(newVideoTrack);
-					}
-				});
-
-				// Update local video element to show camera
-				if (this.localMediaStream) {
-					const oldVideoTrack = this.localMediaStream.getVideoTracks()[0];
-					if (oldVideoTrack) {
-						this.localMediaStream.removeTrack(oldVideoTrack);
-					}
-					this.localMediaStream.addTrack(newVideoTrack);
-				}
+				this.replaceVideoTrack(newVideoTrack);
 
 				// Don't stop the new video stream - it's now being used by the peer connections and local media stream
 				// The tracks will be stopped when the call ends or when switching devices
@@ -311,14 +343,147 @@ const App = Vue.createApp({
 				() => this.setToast("Unable to copy channel URL")
 			);
 		},
-		toggleAudio(e) {
+		async toggleAudio(e) {
 			e.stopPropagation();
-			this.localMediaStream.getAudioTracks()[0].enabled = !this.localMediaStream.getAudioTracks()[0].enabled;
+
+			// Check if we have an audio track in the local media stream
+			const existingAudioTrack = this.localMediaStream.getAudioTracks()[0];
+
+			if (existingAudioTrack) {
+				// Audio track exists, just toggle its enabled state
+				existingAudioTrack.enabled = !existingAudioTrack.enabled;
+				this.audioEnabled = existingAudioTrack.enabled;
+			} else if (this.audioEnabled) {
+				// No audio track but audioEnabled is true - this shouldn't happen normally
+				// but we'll handle it by creating a new audio track
+				try {
+					const newAudioStream = await navigator.mediaDevices.getUserMedia({
+						audio: { deviceId: { exact: this.selectedAudioDeviceId } },
+						video: false,
+					});
+
+					const newAudioTrack = newAudioStream.getAudioTracks()[0];
+					this.replaceAudioTrack(newAudioTrack);
+
+					// Stop the temporary stream since we've moved the track
+					// newAudioStream.getTracks().forEach((track) => {
+					// 	if (track !== newAudioTrack) track.stop();
+					// });
+				} catch (error) {
+					console.error("Error creating audio track:", error);
+					this.setToast("Failed to enable audio");
+					this.audioEnabled = false;
+				}
+			} else {
+				// No audio track and audioEnabled is false - create a new audio track
+				try {
+					const newAudioStream = await navigator.mediaDevices.getUserMedia({
+						audio: { deviceId: { exact: this.selectedAudioDeviceId } },
+						video: false,
+					});
+
+					const newAudioTrack = newAudioStream.getAudioTracks()[0];
+					this.replaceAudioTrack(newAudioTrack);
+					this.audioEnabled = true;
+
+					// Stop the temporary stream since we've moved the track
+					// newAudioStream.getTracks().forEach((track) => {
+					// 	if (track !== newAudioTrack) track.stop();
+					// });
+				} catch (error) {
+					console.error("Error creating audio track:", error);
+					this.setToast("Failed to enable audio");
+				}
+			}
+		},
+		async toggleVideo(e) {
+			e.stopPropagation();
+
+			console.log("toggleVideo called");
+			console.log("Current videoEnabled state:", this.videoEnabled);
+			console.log(
+				"Current localMediaStream tracks:",
+				this.localMediaStream.getTracks().map((t) => ({ kind: t.kind, enabled: t.enabled }))
+			);
+
+			// Check if we have a video track in the local media stream
+			const existingVideoTrack = this.localMediaStream.getVideoTracks()[0];
+
+			if (existingVideoTrack) {
+				console.log("Existing video track found, toggling enabled state");
+				// Video track exists, just toggle its enabled state
+				existingVideoTrack.enabled = !existingVideoTrack.enabled;
+				this.videoEnabled = existingVideoTrack.enabled;
+				console.log("Video track enabled:", this.videoEnabled);
+			} else if (this.videoEnabled) {
+				console.log("No video track but videoEnabled is true - creating new video track");
+				// No video track but videoEnabled is true - this shouldn't happen normally
+				// but we'll handle it by creating a new video track
+				try {
+					const newVideoStream = await navigator.mediaDevices.getUserMedia({
+						audio: false,
+						video: { deviceId: { exact: this.selectedVideoDeviceId } },
+					});
+
+					console.log(
+						"New video stream created:",
+						newVideoStream.getTracks().map((t) => ({ kind: t.kind, enabled: t.enabled }))
+					);
+					const newVideoTrack = newVideoStream.getVideoTracks()[0];
+					console.log("New video track:", newVideoTrack);
+
+					this.replaceVideoTrack(newVideoTrack);
+
+					// Stop the temporary stream since we've moved the track
+					// newVideoStream.getTracks().forEach((track) => {
+					// 	if (track !== newVideoTrack) track.stop();
+					// });
+				} catch (error) {
+					console.error("Error creating video track:", error);
+					this.setToast("Failed to enable video");
+					this.videoEnabled = false;
+				}
+			} else {
+				console.log("No video track and videoEnabled is false - creating new video track");
+				// No video track and videoEnabled is false - create a new video track
+				try {
+					const newVideoStream = await navigator.mediaDevices.getUserMedia({
+						audio: false,
+						video: { deviceId: { exact: this.selectedVideoDeviceId } },
+					});
+
+					console.log(
+						"New video stream created:",
+						newVideoStream.getTracks().map((t) => ({ kind: t.kind, enabled: t.enabled }))
+					);
+					const newVideoTrack = newVideoStream.getVideoTracks()[0];
+					console.log("New video track:", newVideoTrack);
+
+					this.replaceVideoTrack(newVideoTrack);
+					this.videoEnabled = true;
+
+					console.log("Video track added, videoEnabled set to:", this.videoEnabled);
+					console.log(
+						"Updated localMediaStream tracks:",
+						this.localMediaStream.getTracks().map((t) => ({ kind: t.kind, enabled: t.enabled }))
+					);
+
+					// Stop the temporary stream since we've moved the track
+					// newVideoStream.getTracks().forEach((track) => {
+					// 	if (track !== newVideoTrack) track.stop();
+					// });
+				} catch (error) {
+					console.error("Error creating video track:", error);
+					this.setToast("Failed to enable video");
+				}
+			}
+		},
+		togglePreCallAudio(e) {
+			e.stopPropagation();
 			this.audioEnabled = !this.audioEnabled;
 		},
-		toggleVideo(e) {
+		togglePreCallVideo(e) {
 			e.stopPropagation();
-			this.localMediaStream.getVideoTracks()[0].enabled = !this.localMediaStream.getVideoTracks()[0].enabled;
 			this.videoEnabled = !this.videoEnabled;
 		},
 		stopEvent(e) {

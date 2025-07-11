@@ -42,6 +42,17 @@
 						</select>
 					</div>
 
+					<div class="row pre-call-controls">
+						<button v-on:click="togglePreCallAudio" v-bind:class="{ active: audioEnabled }" class="control-btn">
+							<i v-bind:class="'icon-mic' + (audioEnabled ? '' : '-off')"></i>
+							{{ audioEnabled ? 'Disable' : 'Enable' }} Audio
+						</button>
+						<button v-on:click="togglePreCallVideo" v-bind:class="{ active: videoEnabled }" class="control-btn">
+							<i v-bind:class="'icon-video' + (videoEnabled ? '' : '-off')"></i>
+							{{ videoEnabled ? 'Disable' : 'Enable' }} Video
+						</button>
+					</div>
+
 					<div class="row">
 						<button v-if="!callInitiated" v-on:click="initiateCall">Join</button>
 					</div>

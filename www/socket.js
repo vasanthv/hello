@@ -10,11 +10,13 @@ const VOLUME_THRESHOLD = 24;
 const AUDIO_WINDOW_SIZE = 256;
 
 let signalingSocket = null; /* our socket.io connection to our webserver */
+window.signalingSocket = null; /* expose for global access */
 let audioStreams = new Map(); // Holds audio stream related data for each stream
 
 window.initiateCall = () => {
 	App.userAgent = navigator.userAgent;
 	signalingSocket = io(SIGNALLING_SERVER);
+	window.signalingSocket = signalingSocket; /* expose for global access */
 
 	signalingSocket.on("connect", () => {
 		App.peerId = signalingSocket.id;
@@ -154,10 +156,30 @@ function setupLocalMedia(callback) {
 		return;
 	}
 
+	// Build constraints based on pre-call settings
+	const constraints = {};
+
+	if (App.audioEnabled) {
+		constraints.audio = { deviceId: App.selectedAudioDeviceId };
+	}
+
+	if (App.videoEnabled) {
+		constraints.video = { deviceId: App.selectedVideoDeviceId };
+	}
+
 	navigator.mediaDevices
-		.getUserMedia({ audio: { deviceId: App.selectedAudioDeviceId }, video: { deviceId: App.selectedVideoDeviceId } })
+		.getUserMedia(constraints)
 		.then((stream) => {
 			App.localMediaStream = stream;
+
+			// Apply the pre-call enabled/disabled settings to the tracks
+			if (stream.getAudioTracks().length > 0) {
+				stream.getAudioTracks()[0].enabled = App.audioEnabled;
+			}
+			if (stream.getVideoTracks().length > 0) {
+				stream.getVideoTracks()[0].enabled = App.videoEnabled;
+			}
+
 			if (callback) callback();
 		})
 		.catch((error) => {
