@@ -144,7 +144,6 @@ const App = Vue.createApp({
 		// Helper function to trigger renegotiation for a specific peer
 		async triggerRenegotiation(peerId) {
 			try {
-				console.log(`Triggering renegotiation for peer ${peerId}`);
 				const peerConnection = this.peers[peerId].rtc;
 
 				const offer = await peerConnection.createOffer();
@@ -164,26 +163,17 @@ const App = Vue.createApp({
 
 		// Consolidated function to replace video tracks across all peer connections and local media stream
 		replaceVideoTrack(newVideoTrack) {
-			console.log("replaceVideoTrack called with track:", newVideoTrack);
-			console.log("Number of peers:", Object.keys(this.peers).length);
-
 			// Replace video track in all peer connections
 			Object.keys(this.peers).forEach((peerId) => {
 				const peerConnection = this.peers[peerId].rtc;
 				const senders = peerConnection.getSenders();
-				console.log(
-					`Peer ${peerId} senders:`,
-					senders.map((s) => ({ kind: s.track?.kind, track: s.track }))
-				);
 
 				const videoSender = senders.find((sender) => sender.track && sender.track.kind === "video");
 
 				if (videoSender) {
-					console.log(`Peer ${peerId}: Replacing existing video track`);
 					// Replace existing video track
 					videoSender.replaceTrack(newVideoTrack);
 				} else {
-					console.log(`Peer ${peerId}: Adding new video track`);
 					// No existing video sender, add new video track
 					peerConnection.addTrack(newVideoTrack, this.localMediaStream);
 					// Trigger renegotiation for this peer
@@ -195,10 +185,8 @@ const App = Vue.createApp({
 			if (this.localMediaStream) {
 				const oldVideoTrack = this.localMediaStream.getVideoTracks()[0];
 				if (oldVideoTrack) {
-					console.log("Removing old video track from local media stream");
 					this.localMediaStream.removeTrack(oldVideoTrack);
 				}
-				console.log("Adding new video track to local media stream");
 				this.localMediaStream.addTrack(newVideoTrack);
 			}
 		},
@@ -271,7 +259,6 @@ const App = Vue.createApp({
 					this.setToast("Screen sharing not supported in this browser");
 				} else if (error.name === "AbortError") {
 					// User cancelled the screen share dialog
-					console.log("Screen share cancelled by user");
 				} else {
 					this.setToast("Failed to start screen sharing");
 				}
@@ -288,17 +275,14 @@ const App = Vue.createApp({
 
 				this.isScreenSharing = false;
 
-				console.log(this.selectedVideoDeviceId);
 				// Get new video stream with the selected video device
 				const newVideoStream = await navigator.mediaDevices.getUserMedia({
 					audio: false,
 					video: { deviceId: { exact: this.selectedVideoDeviceId } },
 				});
 
-				console.log(newVideoStream);
 				// Replace video track with camera track
 				const newVideoTrack = newVideoStream.getVideoTracks()[0];
-				console.log(newVideoTrack);
 				this.replaceVideoTrack(newVideoTrack);
 
 				// Don't stop the new video stream - it's now being used by the peer connections and local media stream
@@ -404,24 +388,14 @@ const App = Vue.createApp({
 		async toggleVideo(e) {
 			e.stopPropagation();
 
-			console.log("toggleVideo called");
-			console.log("Current videoEnabled state:", this.videoEnabled);
-			console.log(
-				"Current localMediaStream tracks:",
-				this.localMediaStream.getTracks().map((t) => ({ kind: t.kind, enabled: t.enabled }))
-			);
-
 			// Check if we have a video track in the local media stream
 			const existingVideoTrack = this.localMediaStream.getVideoTracks()[0];
 
 			if (existingVideoTrack) {
-				console.log("Existing video track found, toggling enabled state");
 				// Video track exists, just toggle its enabled state
 				existingVideoTrack.enabled = !existingVideoTrack.enabled;
 				this.videoEnabled = existingVideoTrack.enabled;
-				console.log("Video track enabled:", this.videoEnabled);
 			} else if (this.videoEnabled) {
-				console.log("No video track but videoEnabled is true - creating new video track");
 				// No video track but videoEnabled is true - this shouldn't happen normally
 				// but we'll handle it by creating a new video track
 				try {
@@ -430,13 +404,7 @@ const App = Vue.createApp({
 						video: { deviceId: { exact: this.selectedVideoDeviceId } },
 					});
 
-					console.log(
-						"New video stream created:",
-						newVideoStream.getTracks().map((t) => ({ kind: t.kind, enabled: t.enabled }))
-					);
 					const newVideoTrack = newVideoStream.getVideoTracks()[0];
-					console.log("New video track:", newVideoTrack);
-
 					this.replaceVideoTrack(newVideoTrack);
 
 					// Stop the temporary stream since we've moved the track
@@ -449,7 +417,6 @@ const App = Vue.createApp({
 					this.videoEnabled = false;
 				}
 			} else {
-				console.log("No video track and videoEnabled is false - creating new video track");
 				// No video track and videoEnabled is false - create a new video track
 				try {
 					const newVideoStream = await navigator.mediaDevices.getUserMedia({
@@ -457,21 +424,9 @@ const App = Vue.createApp({
 						video: { deviceId: { exact: this.selectedVideoDeviceId } },
 					});
 
-					console.log(
-						"New video stream created:",
-						newVideoStream.getTracks().map((t) => ({ kind: t.kind, enabled: t.enabled }))
-					);
 					const newVideoTrack = newVideoStream.getVideoTracks()[0];
-					console.log("New video track:", newVideoTrack);
-
 					this.replaceVideoTrack(newVideoTrack);
 					this.videoEnabled = true;
-
-					console.log("Video track added, videoEnabled set to:", this.videoEnabled);
-					console.log(
-						"Updated localMediaStream tracks:",
-						this.localMediaStream.getTracks().map((t) => ({ kind: t.kind, enabled: t.enabled }))
-					);
 
 					// Stop the temporary stream since we've moved the track
 					// newVideoStream.getTracks().forEach((track) => {
