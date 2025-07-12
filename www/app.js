@@ -1,7 +1,8 @@
-/* globals Vue */
+/* globals Vue, initializeApp */
 
 "use strict";
 
+// eslint-disable-next-line no-unused-vars
 const App = Vue.createApp({
 	data() {
 		const channelId = window.location.pathname.substr(1);
@@ -60,6 +61,17 @@ const App = Vue.createApp({
 		},
 		screenShareSupported() {
 			return navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia;
+		},
+		videoLayoutClass() {
+			const totalParticipants = this.peersArray.length + 1; // +1 for self
+
+			if (totalParticipants === 1) return "layout-1";
+			if (totalParticipants === 2) return "layout-2";
+			if (totalParticipants === 3) return "layout-3";
+			if (totalParticipants === 4) return "layout-4";
+			if (totalParticipants === 5) return "layout-5";
+			if (totalParticipants === 6) return "layout-6";
+			return "layout-7-plus";
 		},
 	},
 	watch: {
@@ -527,35 +539,5 @@ const App = Vue.createApp({
 	},
 }).mount("#app");
 
-const setTheme = (themeColor) => {
-	if (!themeColor) return null;
-	if (!/^[0-9A-F]{6}$/i.test(themeColor)) return alert("Invalid theme color");
-
-	const textColor = parseInt(themeColor, 16) > 0xffffff / 2 ? "#000" : "#fff";
-
-	document.documentElement.style.setProperty("--background", `#${themeColor}`);
-	document.documentElement.style.setProperty("--text", textColor);
-};
-
-(async () => {
-	const searchParams = new URLSearchParams(window.location.search);
-	const themeColor = searchParams.get("theme");
-
-	if (themeColor) setTheme(themeColor);
-
-	if ("serviceWorker" in navigator) {
-		navigator.serviceWorker.register("/sw.js");
-	}
-
-	await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-	const devices = await navigator.mediaDevices.enumerateDevices();
-	App.audioDevices = devices.filter((device) => device.kind === "audioinput");
-	App.videoDevices = devices.filter((device) => device.kind === "videoinput");
-
-	// Set default device ids
-	const defaultAudioDeviceId = App.audioDevices.find((device) => device.deviceId == "default")?.deviceId;
-	const defaultVideoDeviceId = App.videoDevices.find((device) => device.deviceId == "default")?.deviceId;
-
-	App.selectedAudioDeviceId = defaultAudioDeviceId ?? App.audioDevices[0].deviceId;
-	App.selectedVideoDeviceId = defaultVideoDeviceId ?? App.videoDevices[0].deviceId;
-})();
+// Initialize the application
+initializeApp();

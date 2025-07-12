@@ -14,7 +14,7 @@
 						<a href="javascript:void(0)" v-on:click="copyURL">#{{channelId}}</a>
 					</div>
 					<a href="javascript:void(0)" class="icon-message-circle" v-on:click="showChat=true"
-						v-if="chatEnabled && callInitiated"></a>
+						v-if="chatEnabled && callInitiated">Chat</a>
 				</header>
 
 				<section id="nameWrap" class="wrap mini" v-if="!callInitiated">
@@ -64,7 +64,7 @@
 				</section>
 
 				<section v-if="callInitiated">
-					<div id="videos">
+					<div id="videos" v-bind:class="videoLayoutClass">
 						<div class="video self">
 							<video v-bind:src-object.prop.camel="localMediaStream" autoplay muted playsinline></video>
 							<div class="name">
