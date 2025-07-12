@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?p2vjfb');
-  src:  url('fonts/icomoon.eot?p2vjfb#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?p2vjfb') format('truetype'),
-    url('fonts/icomoon.woff?p2vjfb') format('woff'),
-    url('fonts/icomoon.svg?p2vjfb#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?c0clm3');
+  src:  url('fonts/icomoon.eot?c0clm3#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?c0clm3') format('truetype'),
+    url('fonts/icomoon.woff?c0clm3') format('woff'),
+    url('fonts/icomoon.svg?c0clm3#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,18 +25,42 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-message-circle:before {
-  content: "\e904";
-}
-.icon-mic:before {
-  content: "\e900";
-}
-.icon-mic-off:before {
+.icon-check:before {
   content: "\e901";
 }
-.icon-video:before {
+.icon-copy:before {
+  content: "\e904";
+}
+.icon-maximize:before {
   content: "\e902";
 }
-.icon-video-off:before {
+.icon-chat:before {
+  content: "\e900";
+}
+.icon-mic:before {
+  content: "\e905";
+}
+.icon-mic-off:before {
+  content: "\e906";
+}
+.icon-minus:before {
+  content: "\e90b";
+}
+.icon-screen:before {
+  content: "\e907";
+}
+.icon-more-vertical:before {
+  content: "\e909";
+}
+.icon-phone:before {
   content: "\e903";
+}
+.icon-phone-off:before {
+  content: "\e908";
+}
+.icon-video:before {
+  content: "\e90a";
+}
+.icon-video-off:before {
+  content: "\e90c";
 }

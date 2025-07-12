@@ -6,8 +6,8 @@ const http = require("http"); // Node.js HTTP server
 const app = express(); // Create an Express application
 
 // Import configuration and signalling server logic
-const config = require("./config");
-const signallingServer = require("./signalling-server");
+const config = require("./server/config");
+const signallingServer = require("./server/signalling-server");
 
 // Get PORT from env variable else assign 3000 for development
 const PORT = config.PORT || 824;
