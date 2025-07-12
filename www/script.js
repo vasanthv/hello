@@ -87,61 +87,86 @@ const App = Vue.createApp({
 		},
 	},
 	methods: {
-		async switchAudioDevice(newDeviceId) {
-			try {
-				// Get new audio stream with the selected device
-				const newStream = await navigator.mediaDevices.getUserMedia({
-					audio: { deviceId: { exact: newDeviceId } },
-					video: false,
-				});
+		async toggleMedia(e, kind) {
+			e.stopPropagation();
+			const enabledKey = kind + "Enabled";
+			const selectedDeviceIdKey = "selected" + (kind.charAt(0).toUpperCase() + kind.slice(1)) + "DeviceId";
+			const getTracks = kind === "audio" ? "getAudioTracks" : "getVideoTracks";
+			const replaceTrackMethod = kind === "audio" ? "replaceAudioTrack" : "replaceVideoTrack";
 
-				// Stop the old audio track
-				if (this.localMediaStream) {
-					const oldAudioTrack = this.localMediaStream.getAudioTracks()[0];
-					if (oldAudioTrack) {
-						oldAudioTrack.stop();
-					}
+			const existingTrack = this.localMediaStream[getTracks]()[0];
+
+			if (existingTrack) {
+				existingTrack.enabled = !existingTrack.enabled;
+				this[enabledKey] = existingTrack.enabled;
+			} else if (this[enabledKey]) {
+				try {
+					const constraints =
+						kind === "audio"
+							? { audio: { deviceId: { exact: this[selectedDeviceIdKey] } }, video: false }
+							: { audio: false, video: { deviceId: { exact: this[selectedDeviceIdKey] } } };
+					const newStream = await navigator.mediaDevices.getUserMedia(constraints);
+					const newTrack = newStream[getTracks]()[0];
+					this[replaceTrackMethod](newTrack);
+				} catch {
+					this.setToast(`Failed to enable ${kind}`);
+					this[enabledKey] = false;
 				}
-
-				// Replace audio track using the consolidated function
-				const newAudioTrack = newStream.getAudioTracks()[0];
-				this.replaceAudioTrack(newAudioTrack);
-
-				this.setToast("Audio device changed successfully", "success");
-			} catch (error) {
-				console.error("Error switching audio device:", error);
-				this.setToast("Failed to switch audio device");
+			} else {
+				try {
+					const constraints =
+						kind === "audio"
+							? { audio: { deviceId: { exact: this[selectedDeviceIdKey] } }, video: false }
+							: { audio: false, video: { deviceId: { exact: this[selectedDeviceIdKey] } } };
+					const newStream = await navigator.mediaDevices.getUserMedia(constraints);
+					const newTrack = newStream[getTracks]()[0];
+					this[replaceTrackMethod](newTrack);
+					this[enabledKey] = true;
+				} catch {
+					this.setToast(`Failed to enable ${kind}`);
+				}
 			}
 		},
-
-		async switchVideoDevice(newDeviceId) {
+		async switchMediaDevice(newDeviceId, kind) {
 			try {
-				// Get new video stream with the selected device
-				const newStream = await navigator.mediaDevices.getUserMedia({
-					audio: false,
-					video: { deviceId: { exact: newDeviceId } },
-				});
-
-				// Stop the old video track
+				const constraints =
+					kind === "audio"
+						? { audio: { deviceId: { exact: newDeviceId } }, video: false }
+						: { audio: false, video: { deviceId: { exact: newDeviceId } } };
+				const newStream = await navigator.mediaDevices.getUserMedia(constraints);
+				const getTracks = kind === "audio" ? "getAudioTracks" : "getVideoTracks";
+				const replaceTrackMethod = kind === "audio" ? "replaceAudioTrack" : "replaceVideoTrack";
 				if (this.localMediaStream) {
-					const oldVideoTrack = this.localMediaStream.getVideoTracks()[0];
-					if (oldVideoTrack) {
-						oldVideoTrack.stop();
-					}
+					const oldTrack = this.localMediaStream[getTracks]()[0];
+					if (oldTrack) oldTrack.stop();
 				}
-
-				// Replace video track using the consolidated function
-				const newVideoTrack = newStream.getVideoTracks()[0];
-				this.replaceVideoTrack(newVideoTrack);
-
-				this.setToast("Video device changed successfully", "success");
-			} catch (error) {
-				console.error("Error switching video device:", error);
-				this.setToast("Failed to switch video device");
+				const newTrack = newStream[getTracks]()[0];
+				this[replaceTrackMethod](newTrack);
+				this.setToast(`${kind.charAt(0).toUpperCase() + kind.slice(1)} device changed successfully`, "success");
+			} catch {
+				this.setToast(`Failed to switch ${kind} device`);
 			}
 		},
-
-		// Helper function to trigger renegotiation for a specific peer
+		replaceMediaTrack(newTrack, kind) {
+			const getSendersKind = kind;
+			Object.keys(this.peers).forEach((peerId) => {
+				const peerConnection = this.peers[peerId].rtc;
+				const senders = peerConnection.getSenders();
+				const sender = senders.find((s) => s.track && s.track.kind === getSendersKind);
+				if (sender) {
+					sender.replaceTrack(newTrack);
+				} else {
+					peerConnection.addTrack(newTrack, this.localMediaStream);
+					this.triggerRenegotiation(peerId);
+				}
+			});
+			if (this.localMediaStream) {
+				const getTracks = kind === "audio" ? "getAudioTracks" : "getVideoTracks";
+				const oldTrack = this.localMediaStream[getTracks]()[0];
+				if (oldTrack) this.localMediaStream.removeTrack(oldTrack);
+				this.localMediaStream.addTrack(newTrack);
+			}
+		},
 		async triggerRenegotiation(peerId) {
 			try {
 				const peerConnection = this.peers[peerId].rtc;
@@ -160,8 +185,6 @@ const App = Vue.createApp({
 				console.error(`Error during renegotiation for peer ${peerId}:`, error);
 			}
 		},
-
-		// Consolidated function to replace video tracks across all peer connections and local media stream
 		replaceVideoTrack(newVideoTrack) {
 			// Replace video track in all peer connections
 			Object.keys(this.peers).forEach((peerId) => {
@@ -190,8 +213,6 @@ const App = Vue.createApp({
 				this.localMediaStream.addTrack(newVideoTrack);
 			}
 		},
-
-		// Consolidated function to replace audio tracks across all peer connections and local media stream
 		replaceAudioTrack(newAudioTrack) {
 			// Replace audio track in all peer connections
 			Object.keys(this.peers).forEach((peerId) => {
@@ -219,7 +240,6 @@ const App = Vue.createApp({
 				this.localMediaStream.addTrack(newAudioTrack);
 			}
 		},
-
 		async startScreenShare() {
 			try {
 				// Get screen share stream
@@ -285,9 +305,6 @@ const App = Vue.createApp({
 				const newVideoTrack = newVideoStream.getVideoTracks()[0];
 				this.replaceVideoTrack(newVideoTrack);
 
-				// Don't stop the new video stream - it's now being used by the peer connections and local media stream
-				// The tracks will be stopped when the call ends or when switching devices
-
 				this.setToast("Screen sharing stopped", "success");
 			} catch (error) {
 				console.error("Error stopping screen share:", error);
@@ -332,111 +349,17 @@ const App = Vue.createApp({
 				() => this.setToast("Unable to copy channel URL")
 			);
 		},
-		async toggleAudio(e) {
-			e.stopPropagation();
-
-			// Check if we have an audio track in the local media stream
-			const existingAudioTrack = this.localMediaStream.getAudioTracks()[0];
-
-			if (existingAudioTrack) {
-				// Audio track exists, just toggle its enabled state
-				existingAudioTrack.enabled = !existingAudioTrack.enabled;
-				this.audioEnabled = existingAudioTrack.enabled;
-			} else if (this.audioEnabled) {
-				// No audio track but audioEnabled is true - this shouldn't happen normally
-				// but we'll handle it by creating a new audio track
-				try {
-					const newAudioStream = await navigator.mediaDevices.getUserMedia({
-						audio: { deviceId: { exact: this.selectedAudioDeviceId } },
-						video: false,
-					});
-
-					const newAudioTrack = newAudioStream.getAudioTracks()[0];
-					this.replaceAudioTrack(newAudioTrack);
-
-					// Stop the temporary stream since we've moved the track
-					// newAudioStream.getTracks().forEach((track) => {
-					// 	if (track !== newAudioTrack) track.stop();
-					// });
-				} catch (error) {
-					console.error("Error creating audio track:", error);
-					this.setToast("Failed to enable audio");
-					this.audioEnabled = false;
-				}
-			} else {
-				// No audio track and audioEnabled is false - create a new audio track
-				try {
-					const newAudioStream = await navigator.mediaDevices.getUserMedia({
-						audio: { deviceId: { exact: this.selectedAudioDeviceId } },
-						video: false,
-					});
-
-					const newAudioTrack = newAudioStream.getAudioTracks()[0];
-					this.replaceAudioTrack(newAudioTrack);
-					this.audioEnabled = true;
-
-					// Stop the temporary stream since we've moved the track
-					// newAudioStream.getTracks().forEach((track) => {
-					// 	if (track !== newAudioTrack) track.stop();
-					// });
-				} catch (error) {
-					console.error("Error creating audio track:", error);
-					this.setToast("Failed to enable audio");
-				}
-			}
+		toggleAudio(e) {
+			return this.toggleMedia(e, "audio");
 		},
-		async toggleVideo(e) {
-			e.stopPropagation();
-
-			// Check if we have a video track in the local media stream
-			const existingVideoTrack = this.localMediaStream.getVideoTracks()[0];
-
-			if (existingVideoTrack) {
-				// Video track exists, just toggle its enabled state
-				existingVideoTrack.enabled = !existingVideoTrack.enabled;
-				this.videoEnabled = existingVideoTrack.enabled;
-			} else if (this.videoEnabled) {
-				// No video track but videoEnabled is true - this shouldn't happen normally
-				// but we'll handle it by creating a new video track
-				try {
-					const newVideoStream = await navigator.mediaDevices.getUserMedia({
-						audio: false,
-						video: { deviceId: { exact: this.selectedVideoDeviceId } },
-					});
-
-					const newVideoTrack = newVideoStream.getVideoTracks()[0];
-					this.replaceVideoTrack(newVideoTrack);
-
-					// Stop the temporary stream since we've moved the track
-					// newVideoStream.getTracks().forEach((track) => {
-					// 	if (track !== newVideoTrack) track.stop();
-					// });
-				} catch (error) {
-					console.error("Error creating video track:", error);
-					this.setToast("Failed to enable video");
-					this.videoEnabled = false;
-				}
-			} else {
-				// No video track and videoEnabled is false - create a new video track
-				try {
-					const newVideoStream = await navigator.mediaDevices.getUserMedia({
-						audio: false,
-						video: { deviceId: { exact: this.selectedVideoDeviceId } },
-					});
-
-					const newVideoTrack = newVideoStream.getVideoTracks()[0];
-					this.replaceVideoTrack(newVideoTrack);
-					this.videoEnabled = true;
-
-					// Stop the temporary stream since we've moved the track
-					// newVideoStream.getTracks().forEach((track) => {
-					// 	if (track !== newVideoTrack) track.stop();
-					// });
-				} catch (error) {
-					console.error("Error creating video track:", error);
-					this.setToast("Failed to enable video");
-				}
-			}
+		toggleVideo(e) {
+			return this.toggleMedia(e, "video");
+		},
+		switchAudioDevice(newDeviceId) {
+			return this.switchMediaDevice(newDeviceId, "audio");
+		},
+		switchVideoDevice(newDeviceId) {
+			return this.switchMediaDevice(newDeviceId, "video");
 		},
 		togglePreCallAudio(e) {
 			e.stopPropagation();
@@ -575,8 +498,16 @@ const App = Vue.createApp({
 					this.localMediaStream.getTracks().forEach((track) => track.stop());
 				}
 				const constraints = {
-					audio: this.audioEnabled ? { deviceId: this.selectedAudioDeviceId } : false,
-					video: this.videoEnabled ? { deviceId: this.selectedVideoDeviceId } : false,
+					audio: this.audioEnabled
+						? this.selectedAudioDeviceId
+							? { deviceId: this.selectedAudioDeviceId }
+							: true
+						: false,
+					video: this.videoEnabled
+						? this.selectedVideoDeviceId
+							? { deviceId: this.selectedVideoDeviceId }
+							: true
+						: false,
 				};
 				const stream = await navigator.mediaDevices.getUserMedia(constraints);
 				this.localMediaStream = stream;
