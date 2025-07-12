@@ -110,6 +110,14 @@
 							</select>
 						</div>
 					</div>
+
+					<!-- End call button -->
+					<div class="row" style="justify-content: center; margin-top: 20px;">
+						<button v-on:click="endCall"
+							style="background: #c00; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-weight: bold;">
+							End Call
+						</button>
+					</div>
 				</section>
 
 				<section id="chatwrap" v-if="callInitiated && showChat">

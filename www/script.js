@@ -493,6 +493,42 @@ const App = Vue.createApp({
 			this.videoEnabled = !this.videoEnabled;
 			this.getPreCallMedia();
 		},
+		endCall() {
+			// Disconnect from signaling server
+			if (window.signalingSocket) {
+				window.signalingSocket.disconnect();
+			}
+
+			// Clean up all peer connections
+			Object.keys(this.peers).forEach((peerId) => {
+				if (this.peers[peerId].rtc) {
+					this.peers[peerId].rtc.close();
+				}
+			});
+
+			// Clean up data channels
+			Object.keys(this.dataChannels).forEach((peerId) => {
+				if (this.dataChannels[peerId]) {
+					this.dataChannels[peerId].close();
+				}
+			});
+
+			// Reset call state
+			this.peers = {};
+			this.dataChannels = {};
+			this.callInitiated = false;
+			this.chats = [];
+			this.showChat = false;
+
+			// Clean up screen sharing
+			this.cleanupScreenShare();
+
+			// Show toast
+			this.setToast("Call ended", "success");
+
+			// Re-initialize pre-call preview
+			this.getPreCallMedia();
+		},
 		stopEvent(e) {
 			e.preventDefault();
 			e.stopPropagation();
