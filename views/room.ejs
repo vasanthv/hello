@@ -260,7 +260,7 @@
 						<button @click="callInitiated ? toggleVideo() : togglePreCallVideo()">
 							<i :class="'icon-video'+(videoEnabled ? '' : '-off')"></i>
 						</button>
-						<button @click="toggleChat" v-if="callInitiated"><i class="icon-chat"></i></button>
+						<button @click="toggleChat" v-if="callInitiated && chatEnabled"><i class="icon-chat"></i></button>
 						<button @click="toggleScreenShare" v-if="isScreenSharing" class="red"><i class="icon-screen"></i></button>
 						<button @click="toggleExtraControls"><i class="icon-more-vertical"></i></button>
 						<button
