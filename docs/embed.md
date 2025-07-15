@@ -4,7 +4,7 @@ Ahey can be embedded in any webpage using iFrame as shown below. [Demo link](htt
 
 ```
 <iframe
-  src="https://ahey.ney/your-room-here?name=John"
+  src="https://ahey.ney/your-channel-here?name=John"
   width="100%"
   height="600"
   style="border:0;"

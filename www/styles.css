@@ -51,6 +51,24 @@ textarea {
 [v-cloak] {
 	display: none;
 }
+.wrap {
+	width: 100%;
+	max-width: 640px;
+	margin: auto;
+}
+.wrap.max {
+	max-width: none;
+}
+.title {
+	display: inline-block;
+	font-size: 1.6rem;
+	line-height: 1.5;
+	font-style: italic;
+}
+.row {
+	margin: 1rem;
+}
+
 #toast {
 	background-color: var(--text);
 	color: var(--background);

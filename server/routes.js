@@ -1,4 +1,4 @@
-const { isValidRoomName } = require("./utils");
+const { isValidChannelName } = require("./utils");
 
 const router = require("express").Router();
 
@@ -20,13 +20,13 @@ router.use("/:view", (req, res, next) => {
 });
 
 // Route: Room page (dynamic)
-router.get("/:room", (req, res) => {
-	const room = req.params.room;
-	if (!isValidRoomName(room)) {
-		return res.render("invalid", { page: "invalid-room", title: "Invalid room" });
+router.get("/:channel", (req, res) => {
+	const channel = req.params.channel;
+	if (!isValidChannelName(channel)) {
+		return res.render("invalid", { page: "invalid-channel", title: "Invalid channel" });
 	}
 
-	res.render("room", { page: "room", title: room });
+	res.render("channel", { page: "channel", title: channel });
 });
 
 // Route: Catch-all for 404 errors
