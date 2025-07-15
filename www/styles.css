@@ -42,8 +42,11 @@ textarea {
 	border: none;
 	color: inherit;
 	padding: 0.25rem 1rem;
-	resize: vertical;
 	box-sizing: border-box;
+}
+textarea {
+	resize: vertical;
+	min-height: 2rem;
 }
 [v-cloak] {
 	display: none;
@@ -158,6 +161,10 @@ textarea {
 #controls #extra ul li a {
 	color: inherit;
 	text-decoration: none;
+}
+#controls #chats #scroll {
+	max-height: 50vh;
+	overflow-y: auto;
 }
 #controls #chats .chat {
 	padding: 0.5rem;

@@ -226,9 +226,11 @@
 					</section>
 
 					<section id="chats" v-if="callInitiated && showChat">
-						<div class="chat" v-for="(chat, i) in chats" v-bind:key="i">
-							<div><span class="name">{{chat.name}}:</span> <span v-html="linkify(chat.message)"></span></div>
-							<div class="date">{{formatDate(chat.date)}}</div>
+						<div id="scroll">
+							<div class="chat" v-for="(chat, i) in chats" v-bind:key="i">
+								<div><span class="name">{{chat.name}}:</span> <span v-html="linkify(chat.message)"></span></div>
+								<div class="date">{{formatDate(chat.date)}}</div>
+							</div>
 						</div>
 
 						<textarea
