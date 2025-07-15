@@ -5,7 +5,8 @@
 	"main": "init.js",
 	"scripts": {
 		"start": "node ./scripts/pre-start.js && node init.js",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"format:ejs": "prettier --write \"views/**/*.ejs\""
 	},
 	"author": "",
 	"license": "ISC",

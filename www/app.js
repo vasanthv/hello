@@ -1,4 +1,4 @@
-/* globals Vue, initializeApp */
+/* globals Vue */
 
 "use strict";
 
@@ -37,6 +37,7 @@ const App = Vue.createApp({
 			chats: [],
 			chatMessage: "",
 			showChat: false,
+			showExtraControls: false,
 			toast: [{ type: "", message: "" }],
 		};
 	},
@@ -99,8 +100,19 @@ const App = Vue.createApp({
 		},
 	},
 	methods: {
-		async toggleMedia(e, kind) {
-			e.stopPropagation();
+		toggleChat() {
+			this.showChat = !this.showChat;
+			this.showExtraControls = false;
+		},
+		toggleExtraControls() {
+			this.showExtraControls = !this.showExtraControls;
+			this.showChat = false;
+		},
+		resetPopups() {
+			this.showChat = false;
+			this.showExtraControls = false;
+		},
+		async toggleMedia(kind) {
 			const enabledKey = kind + "Enabled";
 			const selectedDeviceIdKey = "selected" + (kind.charAt(0).toUpperCase() + kind.slice(1)) + "DeviceId";
 			const getTracks = kind === "audio" ? "getAudioTracks" : "getVideoTracks";
@@ -330,6 +342,7 @@ const App = Vue.createApp({
 			} else {
 				this.startScreenShare();
 			}
+			this.showExtraControls = false;
 		},
 
 		cleanupScreenShare() {
@@ -345,6 +358,7 @@ const App = Vue.createApp({
 			if (!this.name) return alert("Please enter your name");
 			if (!this.videoEnabled && !this.audioEnabled) return alert("Please enable either audio or video");
 			this.callInitiated = true;
+			this.showExtraControls - false;
 			window.initiateCall();
 		},
 		setToast(message, type = "error") {
@@ -361,11 +375,11 @@ const App = Vue.createApp({
 				() => this.setToast("Unable to copy channel URL")
 			);
 		},
-		toggleAudio(e) {
-			return this.toggleMedia(e, "audio");
+		toggleAudio() {
+			return this.toggleMedia("audio");
 		},
-		toggleVideo(e) {
-			return this.toggleMedia(e, "video");
+		toggleVideo() {
+			return this.toggleMedia("video");
 		},
 		switchAudioDevice(newDeviceId) {
 			return this.switchMediaDevice(newDeviceId, "audio");
@@ -373,13 +387,11 @@ const App = Vue.createApp({
 		switchVideoDevice(newDeviceId) {
 			return this.switchMediaDevice(newDeviceId, "video");
 		},
-		togglePreCallAudio(e) {
-			e.stopPropagation();
+		togglePreCallAudio() {
 			this.audioEnabled = !this.audioEnabled;
 			this.getPreCallMedia();
 		},
-		togglePreCallVideo(e) {
-			e.stopPropagation();
+		togglePreCallVideo() {
 			this.videoEnabled = !this.videoEnabled;
 			this.getPreCallMedia();
 		},
@@ -504,6 +516,24 @@ const App = Vue.createApp({
 					break;
 			}
 		},
+		async enumerateDevices() {
+			// Request media permissions and enumerate devices
+			try {
+				const devices = await navigator.mediaDevices.enumerateDevices();
+
+				App.audioDevices = devices.filter((device) => device.kind === "audioinput");
+				App.videoDevices = devices.filter((device) => device.kind === "videoinput");
+
+				// Set default device ids
+				const defaultAudioDeviceId = App.audioDevices.find((device) => device.deviceId == "default")?.deviceId;
+				const defaultVideoDeviceId = App.videoDevices.find((device) => device.deviceId == "default")?.deviceId;
+
+				App.selectedAudioDeviceId = defaultAudioDeviceId ?? App.audioDevices[0]?.deviceId;
+				App.selectedVideoDeviceId = defaultVideoDeviceId ?? App.videoDevices[0]?.deviceId;
+			} catch (error) {
+				console.error("Failed to initialize media devices:", error);
+			}
+		},
 		async getPreCallMedia() {
 			try {
 				if (this.localMediaStream) {
@@ -527,6 +557,11 @@ const App = Vue.createApp({
 				if (videoElem) {
 					videoElem.srcObject = stream;
 				}
+
+				// Enumerate devices once during pre-call flow if not already done
+				if (this.audioDevices.length === 0 && this.videoDevices.length === 0) {
+					await this.enumerateDevices();
+				}
 			} catch {
 				this.setToast("Unable to access camera/mic");
 			}
@@ -539,5 +574,7 @@ const App = Vue.createApp({
 	},
 }).mount("#app");
 
-// Initialize the application
-initializeApp();
+// Register service worker for PWA functionality
+if ("serviceWorker" in navigator) {
+	navigator.serviceWorker.register("/sw.js");
+}

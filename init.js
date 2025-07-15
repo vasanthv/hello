@@ -8,6 +8,7 @@ const app = express(); // Create an Express application
 // Import configuration and signalling server logic
 const config = require("./server/config");
 const signallingServer = require("./server/signalling-server");
+const routes = require("./server/routes");
 
 // Get PORT from env variable else assign 3000 for development
 const PORT = config.PORT || 824;
@@ -25,26 +26,7 @@ app.use(express.static(path.join(__dirname, "www"), { maxAge: 0 })); // No cache
 const io = socketIO(server);
 io.sockets.on("connection", signallingServer);
 
-// Route: Home page
-app.get("/", (req, res) => res.render("index", { page: "index", title: "A free video chat for the web." }));
-
-// Route: Static views (faq, privacy, etc.)
-app.get(Object.keys(config.STATIC_VIEWS), (req, res) => {
-	const view = req.path.substring(1); // Remove leading slash to get view name
-	res.render(view, { page: view, title: config.STATIC_VIEWS[req.path] });
-});
-
-// Route: Channel page (dynamic)
-app.get("/:channel", (req, res) => {
-	const channel = req.params.channel;
-	const channelRegex = /^([a-zA-Z0-9-]){1,100}$/; // Only allow alphanumeric and hyphens, 1-100 chars
-	if (!channelRegex.test(channel)) return res.render("invalid", { page: "invalid-channel", title: "Invalid channel" });
-
-	res.render("channel", { page: "channel", title: channel });
-});
-
-// Route: Catch-all for 404 errors
-app.use(["/*", "/404"], (req, res) => res.render("404", { page: "404", title: "Page not found" }));
+app.use("/", routes);
 
 // Start the server and log status
 server.listen(PORT, null, () => {

@@ -1,10 +1,14 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="viewport"
-		content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+	<meta
+		name="viewport"
+		content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+	/>
 	<meta name="description" content="A free video chat for the web. No sign ups. No downloads." />
-	<meta name="keywords"
-		content="group video chat, video communication, multiparty video chat, video chat, webrtc, peer to peer, p2p" />
+	<meta
+		name="keywords"
+		content="group video chat, video communication, multiparty video chat, video chat, webrtc, peer to peer, p2p"
+	/>
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 	<meta name="application-name" content="Ahey" />
@@ -25,16 +29,14 @@
 
 	<link rel="stylesheet" href="/styles.css" />
 
-	<% if(page==="channel" ) { %>
-		<script defer src="/adapter-latest.js"></script>
-		<script defer src="/socket.io/socket.io.js"></script>
-		<script defer src="/vue.global.prod.js"></script>
-		<script defer src="/ice-config.js"></script>
-		<script defer src="/init.js"></script>
-		<script defer src="/socket.js"></script>
-		<script defer src="/app.js"></script>
-		<% } %>
+	<% if(page==="room" ) { %>
+	<script defer src="/adapter-latest.js"></script>
+	<script defer src="/socket.io/socket.io.js"></script>
+	<script defer src="/vue.global.prod.js"></script>
+	<script defer src="/ice-config.js"></script>
+	<script defer src="/socket.js"></script>
+	<script defer src="/app.js"></script>
+	<% } %>
 
-			<title>Ahey / <%= title %>
-			</title>
+	<title>Ahey / <%= title %></title>
 </head>

@@ -301,7 +301,7 @@
         },
         {
           "id": 72,
-          "order": 8,
+          "order": 0,
           "prevSize": 24,
           "code": 59650,
           "name": "copy",
@@ -573,7 +573,11 @@
         },
         {
           "id": 139,
-          "order": 0
+          "order": 18,
+          "prevSize": 24,
+          "code": 59662,
+          "name": "link",
+          "tempChar": ""
         },
         {
           "id": 140,
@@ -625,7 +629,7 @@
           "prevSize": 24,
           "code": 59651,
           "name": "maximize",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 152,
@@ -641,7 +645,7 @@
           "prevSize": 24,
           "code": 59652,
           "name": "chat",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 155,
@@ -653,7 +657,7 @@
           "prevSize": 24,
           "code": 59653,
           "name": "mic",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 157,
@@ -661,7 +665,7 @@
           "prevSize": 24,
           "code": 59654,
           "name": "mic-off",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 158,
@@ -677,7 +681,7 @@
           "prevSize": 24,
           "code": 59655,
           "name": "minus",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 161,
@@ -693,7 +697,7 @@
           "prevSize": 24,
           "code": 59656,
           "name": "screen",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 164,
@@ -709,7 +713,7 @@
           "prevSize": 24,
           "code": 59657,
           "name": "more-vertical",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 167,
@@ -765,7 +769,7 @@
           "prevSize": 24,
           "code": 59658,
           "name": "phone",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 180,
@@ -789,7 +793,7 @@
           "prevSize": 24,
           "code": 59659,
           "name": "phone-off",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 185,
@@ -1109,7 +1113,7 @@
           "prevSize": 24,
           "code": 59660,
           "name": "video",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 264,
@@ -1117,7 +1121,7 @@
           "prevSize": 24,
           "code": 59661,
           "name": "video-off",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 265,
