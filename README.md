@@ -4,34 +4,19 @@
 
 Ahey is built using WebRTC, so all your video, audio & text chat is peer-to-peer. Group video call is achieved using WebRTC mesh. So the quality of the call is inversely proportional to the number of people on the call. The sweet number is somewhere around 6 to 8 people in an average high-speed connection.
 
+### Key Features
+
+- **No Sign-up Required:** Join or create video calls instantly without accounts or passwords.
+- **Peer-to-Peer WebRTC:** Low-latency direct streaming between participants.
+- **Unique Channel URLs:** Easily shareable links like `ahey.io/channel-id`.
+- **Embed Anywhere:** Embed calls on any website or app using an `<iframe>`.
+- **Free and Browser-Based:** 100% free, runs in modern browsers with no downloads.
+
 ---
 
-### Prerequisites:
+### Wiki
 
-- Node.js 8.x or above
-- NPM
-
-### How to Build this app locally
-
-[Fork this repo](https://github.com/vasanthv/ahey) and then clone it:
-
-```bash
-git clone https://github.com/<your_name>/ahey.git
-```
-
-`cd ahey` and then install dependencies
-
-```bash
-npm install
-```
-
-Run the app
-
-```bash
-npm start
-```
-
-to start the ahey server on port 3000. Your ahey instance will be running on http://localhost:3000.
+Please refer [wiki page](https://github.com/vasanthv/ahey/wiki) for more documentation.
 
 ### Contributions
 
