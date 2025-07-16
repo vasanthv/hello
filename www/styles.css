@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
 @import "icomoon/style.css";
 
 :root {
@@ -18,11 +20,14 @@ html {
 }
 body {
 	margin: 0px;
-	font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-		"Segoe UI Symbol";
+	font-family: "Inter", system-ui, sans-serif;
+	font-optical-sizing: auto;
 	line-height: 1.6;
 	background-color: var(--background);
 	color: var(--text);
+}
+a {
+	color: inherit;
 }
 button {
 	font: inherit;
@@ -48,6 +53,14 @@ textarea {
 	resize: vertical;
 	min-height: 2rem;
 }
+footer {
+	display: flex;
+	justify-content: space-between;
+	margin: 1rem;
+}
+footer a {
+	margin: 0px 0.5rem;
+}
 [v-cloak] {
 	display: none;
 }
@@ -67,6 +80,10 @@ textarea {
 }
 .row {
 	margin: 1rem;
+}
+.flex {
+	display: flex;
+	justify-content: center;
 }
 
 #toast {
@@ -94,6 +111,31 @@ textarea {
 }
 #toast.success {
 	background: var(--green);
+}
+#channelbox {
+	position: relative;
+}
+#channelbox .perma-placeholder {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	bottom: 0px;
+	padding: calc(0.5rem + 2px) 1rem;
+	opacity: 0.5;
+}
+#channelbox input {
+	padding: 0.5rem 1rem;
+	padding-left: 5.3rem;
+	border: 2px solid var(--text);
+	border-radius: 0.5rem;
+}
+#channelbox button {
+	background-color: var(--text);
+	color: var(--background);
+	padding: 0.5rem 2rem;
+	border: 2px solid var(--text);
+	margin-left: 1rem;
+	border-radius: 0.5rem;
 }
 
 #blanket {
@@ -160,6 +202,7 @@ textarea {
 }
 #controls #extra ul li {
 	padding: 0.25rem 0.5rem;
+	border-radius: 0.75rem;
 }
 #controls #extra ul li.indent {
 	padding-left: 1.5rem;
@@ -276,18 +319,20 @@ textarea {
 	html {
 		font-size: 1rem;
 	}
-	@media (max-width: 600px) {
-		#videos.layout-2 {
-			grid-template-columns: 1fr;
-			grid-template-rows: auto;
-		}
-		#videos.layout-3,
-		#videos.layout-4,
-		#videos.layout-5,
-		#videos.layout-6,
-		#videos.layout-7-plus {
-			grid-template-columns: 1fr 1fr;
-			grid-template-rows: auto;
-		}
+	#videos.layout-2 {
+		grid-template-columns: 1fr;
+		grid-template-rows: auto;
+	}
+	#videos.layout-3,
+	#videos.layout-4,
+	#videos.layout-5,
+	#videos.layout-6,
+	#videos.layout-7-plus {
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: auto;
+	}
+	footer {
+		flex-direction: column;
+		gap: 2rem;
 	}
 }

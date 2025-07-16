@@ -41,9 +41,12 @@
 				<secion id="controls">
 					<section id="extra" v-if="showExtraControls">
 						<ul>
-							<li><i class="icon-mic"></i> Audio devices</li>
+							<li class="action" @click="showAudioDevices = !showAudioDevices">
+								<i class="icon-mic"></i> Change audio
+							</li>
 							<li
 								class="action indent"
+								v-if="showAudioDevices"
 								v-for="(audioDevice, i) in audioDevices"
 								v-bind:key="audioDevice.deviceId"
 								@click="selectedAudioDeviceId = audioDevice.deviceId"
@@ -53,10 +56,12 @@
 								{{audioDevice.label}}
 							</li>
 
-							<li><i class="icon-video"></i> Video devices</li>
-
+							<li class="action" @click="showVideoDevices = !showVideoDevices">
+								<i class="icon-video"></i> Change video
+							</li>
 							<li
 								class="action indent"
+								v-if="showVideoDevices"
 								v-for="(videoDevice, i) in videoDevices"
 								v-bind:key="videoDevice.deviceId"
 								@click="selectedVideoDeviceId = videoDevice.deviceId"

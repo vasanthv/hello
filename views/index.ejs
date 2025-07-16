@@ -8,23 +8,23 @@
 			<div class="row title">Ahey - a free video call app for the web.</div>
 			<div class="row">
 				<p>
-					A frictionless video conference app for the web that can be embedded in any web page. <br />No sign-ups. No
-					downloads. 100% free.
+					A frictionless peer-to-peer video conference app for the web that can be embedded in any web page. <br />No
+					sign-ups. No downloads. 100% free.
 				</p>
 			</div>
 
 			<div class="row">
-				<div id="joinBox" class="flex">
-					<span class="light">/</span>
-					<input type="text" placeholder="channel-name" class="flex-1" />
-					<button onClick="onJoin()">Join</button>
+				<div id="channelbox" class="flex">
+					<span class="perma-placeholder">ahey.net/</span>
+					<input type="text" placeholder="your-channel-id" class="flex-1" />
+					<button onClick="onJoin()">Start</button>
 				</div>
 			</div>
 
 			<script type="text/javascript">
-				const inputElement = document.querySelector("#joinBox input");
+				const inputElement = document.querySelector("#channelbox input");
 				function onJoin() {
-					let channelId = document.querySelector("#joinBox input").value;
+					let channelId = document.querySelector("#channelbox input").value;
 					if (!channelId) channelId = Math.random().toString(36).substr(2, 6);
 
 					window.location.pathname = channelId;

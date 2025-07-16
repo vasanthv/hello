@@ -6,23 +6,19 @@
 const App = Vue.createApp({
 	data() {
 		const channelId = window.location.pathname.substr(1);
-		const channelLink = `${window.location.origin}/${channelId}`;
 		const searchParams = new URLSearchParams(window.location.search);
 
 		const name = searchParams.get("name");
 		const chatEnabled = searchParams.get("chat") !== "false";
-		const showHeader = searchParams.get("header") !== "false";
 
 		return {
 			channelId,
-			channelLink,
 			peerId: "",
 			userAgent: "",
 			audioDevices: [],
 			videoDevices: [],
 			audioEnabled: true,
 			videoEnabled: true,
-			showSettings: false,
 			selectedAudioDeviceId: null,
 			selectedVideoDeviceId: null,
 			name: name ?? window.localStorage.name,
@@ -32,12 +28,13 @@ const App = Vue.createApp({
 			isScreenSharing: false,
 			peers: {},
 			dataChannels: {},
-			showHeader,
 			chatEnabled,
 			chats: [],
 			chatMessage: "",
 			showChat: false,
 			showExtraControls: false,
+			showAudioDevices: false,
+			showVideoDevices: false,
 			toast: [{ type: "", message: "" }],
 		};
 	},
@@ -111,6 +108,8 @@ const App = Vue.createApp({
 		resetPopups() {
 			this.showChat = false;
 			this.showExtraControls = false;
+			this.showAudioDevices = false;
+			this.showVideoDevices = false;
 		},
 		async toggleMedia(kind) {
 			const enabledKey = kind + "Enabled";
@@ -370,7 +369,7 @@ const App = Vue.createApp({
 			}, 3500);
 		},
 		copyURL() {
-			navigator.clipboard.writeText(this.channelLink).then(
+			navigator.clipboard.writeText(`${window.location.origin}/${this.channelId}`).then(
 				() => this.setToast("Channel URL copied 👍", "success"),
 				() => this.setToast("Unable to copy channel URL")
 			);
