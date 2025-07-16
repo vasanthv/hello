@@ -5,6 +5,7 @@ const router = require("express").Router();
 const STATIC_VIEWS = {
 	faq: "Frequently asked questions",
 	privacy: "Privacy policy",
+	terms: "Terms of service",
 };
 
 // Route: Home page
@@ -14,7 +15,7 @@ router.get("/", (req, res) => res.render("index", { page: "index", title: "A fre
 router.use("/:view", (req, res, next) => {
 	const view = req.params.view;
 	if (STATIC_VIEWS[view]) {
-		return res.render(view, { page: view, title: STATIC_VIEWS[req.path] });
+		return res.render(view, { page: view, title: STATIC_VIEWS[view] });
 	}
 	next();
 });
