@@ -101,12 +101,14 @@
 							</div>
 						</div>
 
-						<textarea
-							v-model="chatMessage"
-							rows="1"
-							v-on:keydown.enter="sendChat"
-							placeholder="Enter your message"
-						></textarea>
+						<div class="chat">
+							<textarea
+								v-model="chatMessage"
+								rows="1"
+								v-on:keydown.enter="sendChat"
+								placeholder="Enter your message"
+							></textarea>
+						</div>
 					</section>
 
 					<section id="name" v-if="!callInitiated && !showExtraControls">
