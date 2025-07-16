@@ -9,7 +9,7 @@
 					{{toast.message}}
 				</section>
 
-				<section id="pre-call" class="wrap mini" v-if="!callInitiated">
+				<section id="pre-call" v-if="!callInitiated">
 					<div id="videos" class="layout-1">
 						<div class="video self">
 							<video id="preCallVideo" class="video self" autoplay muted playsinline></video>
@@ -20,7 +20,13 @@
 				<section v-if="callInitiated">
 					<div id="videos" v-bind:class="videoLayoutClass">
 						<div class="video self">
-							<video v-bind:src-object.prop.camel="localMediaStream" autoplay muted playsinline></video>
+							<video
+								v-bind:ref="'selfVideo'"
+								v-bind:src-object.prop.camel="localMediaStream"
+								autoplay
+								muted
+								playsinline
+							></video>
 							<div class="meta">
 								<i v-bind:class="'icon-mic'+(audioEnabled ? '' : '-off')"></i>
 								{{name}} (You)
@@ -28,7 +34,15 @@
 							</div>
 						</div>
 						<div class="video" v-for="(peer, i) in peersArray" v-bind:key="peerKey">
-							<video v-bind:src-object.prop.camel="peer.stream" autoplay playsinline></video>
+							<video
+								v-bind:ref="'peerVideo' + i"
+								v-bind:src-object.prop.camel="peer.stream"
+								autoplay
+								playsinline
+							></video>
+							<button class="fullscreen-btn" @click="requestFullscreen($refs['peerVideo' + i])">
+								<i class="icon-maximize"></i>
+							</button>
 							<div class="meta">
 								<i v-bind:class="'icon-mic'+(peer.isMuted ? '-off' : '')+' '+(peer.isTalking ? 'green' : '')"></i>
 								{{peer.name}}

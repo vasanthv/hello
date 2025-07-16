@@ -1,4 +1,4 @@
-# Ahey
+# Ahey (previously Hello)
 
 ## A free, p2p, group video call app for the web. No signups. No downloads. Works in all major browsers.
 
@@ -13,7 +13,7 @@ Ahey is built using WebRTC, so all your video, audio & text chat is peer-to-peer
 
 ### How to Build this app locally
 
-[Fork this repo](https://github.com/vasanthv/ahey/fork) and then clone it:
+[Fork this repo](https://github.com/vasanthv/ahey) and then clone it:
 
 ```bash
 git clone https://github.com/<your_name>/ahey.git

@@ -282,7 +282,7 @@ footer a {
 }
 
 #videos .video video {
-	object-fit: cover;
+	object-fit: contain;
 	width: 100%;
 	height: 100%;
 }
@@ -313,6 +313,25 @@ footer a {
 }
 #videos .video .meta i.green {
 	color: var(--green);
+}
+.fullscreen-btn {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	background: var(--controls);
+	color: #fff;
+	border: none;
+	border-radius: 0.5rem;
+	padding: 0.25rem 0.5rem;
+	z-index: 10;
+	cursor: pointer;
+	font-size: 1.2rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.fullscreen-btn:hover {
+	background: var(--controls-active);
 }
 
 @media only screen and (max-width: 600px) {

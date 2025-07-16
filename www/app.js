@@ -565,6 +565,19 @@ const App = Vue.createApp({
 				this.setToast("Unable to access camera/mic");
 			}
 		},
+		requestFullscreen(videoElem) {
+			if (!videoElem) return;
+			const el = Array.isArray(videoElem) ? videoElem[0] : videoElem;
+			if (el.requestFullscreen) {
+				el.requestFullscreen();
+			} else if (el.webkitRequestFullscreen) {
+				el.webkitRequestFullscreen();
+			} else if (el.mozRequestFullScreen) {
+				el.mozRequestFullScreen();
+			} else if (el.msRequestFullscreen) {
+				el.msRequestFullscreen();
+			}
+		},
 	},
 	mounted() {
 		if (!this.callInitiated) {
