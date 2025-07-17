@@ -2,7 +2,7 @@
 
 ## A free, p2p, group video call app for the web. No signups. No downloads. Works in all major browsers.
 
-Ahey is built using WebRTC, so all your video, audio & text chat is peer-to-peer. Group video call is achieved using WebRTC mesh. So the quality of the call is inversely proportional to the number of people on the call. The sweet number is somewhere around 6 to 8 people in an average high-speed connection.
+Ahey is built on WebRTC, enabling peer-to-peer video, audio, and text communication. Group calls use a mesh topology, where each participant connects directly to every other participant. This means there’s no central server handling the media streams, which keeps things private and low-latency, but also makes performance dependent on the number of participants and their internet speeds. Call quality tends to decrease as more people join, with the sweet spot typically being around 6 to 8 participants on a high-speed connection.
 
 ### Key Features
 
