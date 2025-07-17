@@ -11,12 +11,12 @@ self.addEventListener("install", function (e) {
 		"/manifest.json",
 		"/style.css",
 		"/vue.global.prod.js",
-		"/socket.js",
-		"/script.js",
+		"/peer.js",
+		"/app.js",
 		"/adapter-latest.js",
 		"/socket.io/socket.io.js",
-		"/faq",
 		"/privacy",
+		"/terms",
 	];
 
 	// Deleting the previous version of cache

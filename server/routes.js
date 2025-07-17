@@ -24,13 +24,13 @@ router.use("/:view", (req, res, next) => {
 router.get("/:channel", (req, res) => {
 	const channel = req.params.channel;
 	if (!isValidChannelName(channel)) {
-		return res.render("invalid", { page: "invalid-channel", title: "Invalid channel" });
+		return res.status(400).render("invalid", { page: "invalid-channel", title: "Invalid channel" });
 	}
 
 	res.render("channel", { page: "channel", title: channel });
 });
 
 // Route: Catch-all for 404 errors
-router.use(["/*", "/404"], (req, res) => res.render("404", { page: "404", title: "Page not found" }));
+router.use(["/*", "/404"], (req, res) => res.status(404).render("404", { page: "404", title: "Page not found" }));
 
 module.exports = router;
