@@ -1,42 +1,27 @@
-# Hello
+# Ahey (previously Hello)
 
 ## A free, p2p, group video call app for the web. No signups. No downloads. Works in all major browsers.
 
-Hello is built using WebRTC, so all your video, audio & text chat is peer-to-peer. Group video call is achieved using WebRTC mesh. So the quality of the call is inversely proportional to the number of people on the call. The sweet number is somewhere around 6 to 8 people in an average high-speed connection.
+Ahey is built on WebRTC, enabling peer-to-peer video, audio, and text communication. Group calls use a mesh topology, where each participant connects directly to every other participant. This means there’s no central server handling the media streams, which keeps things private and low-latency, but also makes performance dependent on the number of participants and their internet speeds. Call quality tends to decrease as more people join, with the sweet spot typically being around 6 to 8 participants on a high-speed connection.
+
+### Key Features
+
+- **No Sign-up Required:** Join or create video calls instantly without accounts or passwords.
+- **Peer-to-Peer WebRTC:** Low-latency direct streaming between participants.
+- **Unique Channel URLs:** Easily shareable links like `ahey.io/channel-id`.
+- **Embed Anywhere:** Embed calls on any website or app using an `<iframe>`.
+- **Free and Browser-Based:** 100% free, runs in modern browsers with no downloads.
 
 ---
 
-### Prerequisites:
+### Wiki
 
-- Node.js 8.x or above
-- NPM
-
-### How to Build this app locally
-
-[Fork this repo](https://github.com/vasanthv/hello/fork) and then clone it:
-
-```bash
-git clone https://github.com/<your_name>/hello.git
-```
-
-`cd hello` and then install dependencies
-
-```bash
-npm install
-```
-
-Run the app
-
-```bash
-npm start
-```
-
-to start the hello server on port 3000. Your hello instance will be running on http://localhost:3000.
+Please refer [wiki page](https://github.com/vasanthv/ahey/wiki) for more documentation.
 
 ### Contributions
 
-Please refer <a href="https://github.com/vasanthv/hello/blob/master/markdowns/CONTRIBUTIONS.md">CONTRIBUTIONS.md</a> for more info.
+Please refer <a href="https://github.com/vasanthv/ahey/blob/master/markdowns/CONTRIBUTIONS.md">CONTRIBUTIONS.md</a> for more info.
 
 ### LICENSE
 
-<a href="https://github.com/vasanthv/hello/blob/master/LICENSE">MIT License</a>
+<a href="https://github.com/vasanthv/ahey/blob/master/LICENSE">MIT License</a>

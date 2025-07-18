@@ -5,25 +5,27 @@
 	<body>
 		<div class="wrap">
 			<br />
-			<div class="row title">Hello</div>
-			<div class="row bold">A free video chat for the web.</div>
+			<div class="row title">Ahey - a free video call app for the web.</div>
 			<div class="row">
-				<p>A frictionless peer-to-peer video chat app for the web that can be embedded in any web page.</p>
-				<p>No sign-ups. No downloads. 100% free.</p>
+				<p>
+					A frictionless, peer-to-peer video conferencing app for the web that can be embedded in any webpage. No
+					sign-ups, no downloads, no limits, 100% free and ready to use instantly.
+				</p>
 			</div>
 
 			<div class="row">
-				<div id="joinBox" class="flex">
-					<span class="light">/</span>
-					<input type="text" placeholder="channel-name" class="flex-1" />
-					<button onClick="onJoin()">Join</button>
+				<div id="channelbox" class="flex">
+					<span class="perma-placeholder">ahey.net/</span>
+					<input type="text" placeholder="channel-id" class="flex-1" />
+					<button onClick="onJoin()">Start</button>
 				</div>
+				<div class="small light">Entering a channel ID is optional - click "Start" to generate a random channel.</div>
 			</div>
 
 			<script type="text/javascript">
-				const inputElement = document.querySelector("#joinBox input");
+				const inputElement = document.querySelector("#channelbox input");
 				function onJoin() {
-					let channelId = document.querySelector("#joinBox input").value;
+					let channelId = document.querySelector("#channelbox input").value;
 					if (!channelId) channelId = Math.random().toString(36).substr(2, 6);
 
 					window.location.pathname = channelId;

@@ -9,15 +9,15 @@
 		name="keywords"
 		content="group video chat, video communication, multiparty video chat, video chat, webrtc, peer to peer, p2p"
 	/>
-	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-	<meta name="application-name" content="Hello" />
-	<meta name="theme-color" content="#ffffff" />
+	<meta name="mobile-web-app-capable" content="yes" />
+	<meta name="application-name" content="Ahey" />
+	<meta name="theme-color" content="#000000" />
 
 	<!-- Meta data for link fetching -->
-	<meta property="og:url" content="https://hello.vasanthv.me" />
-	<meta property="og:image" content="https://hello.vasanthv.me/banner.png" />
-	<meta property="og:title" content="Hello" />
+	<meta property="og:url" content="https://ahey.net" />
+	<meta property="og:image" content="https://ahey.net/banner.png" />
+	<meta property="og:title" content="Ahey" />
 	<meta property="og:description" content="A free video chat for the web. No sign ups. No downloads. 100% free." />
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -29,13 +29,13 @@
 
 	<link rel="stylesheet" href="/styles.css" />
 
-	<% if(page === "channel") { %>
-	<script defer src="/adapter-latest.js"></script>
+	<% if(page==="channel" ) { %>
 	<script defer src="/socket.io/socket.io.js"></script>
 	<script defer src="/vue.global.prod.js"></script>
-	<script defer src="/socket.js"></script>
-	<script defer src="/script.js"></script>
+	<script defer src="/ice-config.js"></script>
+	<script defer src="/peer.js"></script>
+	<script defer src="/app.js"></script>
 	<% } %>
 
-	<title>Hello / <%= title %></title>
+	<title>Ahey / <%= title %></title>
 </head>

@@ -1,11 +1,12 @@
 {
-	"name": "hello",
-	"version": "1.0.1",
+	"name": "ahey",
+	"version": "2.0.0",
 	"description": "A free group video conference app for the web. No sign ups. No downloads.",
-	"main": "server.js",
+	"main": "init.js",
 	"scripts": {
-		"start": "node ./scripts/pre-start.js && node server.js",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"start": "node ./scripts/pre-start.js && node init.js",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"format:ejs": "prettier --write \"views/**/*.ejs\""
 	},
 	"author": "",
 	"license": "ISC",
