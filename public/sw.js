@@ -9,11 +9,10 @@ self.addEventListener("install", function (e) {
 	const filesToCache = [
 		"/",
 		"/manifest.json",
-		"/style.css",
+		"/styles.css",
 		"/vue.global.prod.js",
 		"/peer.js",
 		"/app.js",
-		"/adapter-latest.js",
 		"/socket.io/socket.io.js",
 		"/privacy",
 		"/terms",
@@ -43,6 +42,6 @@ self.addEventListener("fetch", function (event) {
 			.then(function (cache) {
 				return cache || fetch(event.request);
 			})
-			.catch((err) => {})
+			.catch(() => {})
 	);
 });

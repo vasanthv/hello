@@ -40,22 +40,11 @@ const App = Vue.createApp({
 	},
 	computed: {
 		peersArray() {
-			return Object.keys(this.peers).map((peer) => {
-				let isMuted = false;
-				if (this.peers[peer].stream) {
-					const audioTracks = this.peers[peer].stream.getAudioTracks();
-					if (audioTracks.length > 0) {
-						isMuted = audioTracks[0].muted;
-					}
-				}
-
-				return {
-					stream: this.peers[peer].stream,
-					name: this.peers[peer].data.peerName,
-					isTalking: this.peers[peer].data.isTalking,
-					isMuted,
-				};
-			});
+			return Object.keys(this.peers).map((peer) => ({
+				stream: this.peers[peer].stream,
+				name: this.peers[peer].data.peerName,
+				isTalking: this.peers[peer].data.isTalking,
+			}));
 		},
 		screenShareSupported() {
 			return navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia;
