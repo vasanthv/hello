@@ -129,12 +129,7 @@
 						<button @click="toggleChat" v-if="callInitiated && chatEnabled"><i class="icon-chat"></i></button>
 						<button @click="toggleScreenShare" v-if="isScreenSharing" class="red"><i class="icon-screen"></i></button>
 						<button @click="toggleExtraControls"><i class="icon-more-vertical"></i></button>
-						<button
-							class="join"
-							v-if="!callInitiated"
-							v-on:click="initiateCall"
-							:disabled="!audioEnabled && !videoEnabled"
-						>
+						<button class="join" v-if="!callInitiated" v-on:click="initiateCall">
 							<i class="icon-phone"></i>&nbsp;Join
 						</button>
 					</section>

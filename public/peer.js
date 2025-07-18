@@ -69,7 +69,7 @@ const setupOfferCreation = (peerConnection, peer_id) => {
 							session_description: localDescription,
 						});
 					})
-					.catch(() => App.setToast("Offer setLocalDescription failed!"));
+					.catch((error) => console.log("Offer setLocalDescription failed!", error));
 			})
 			.catch((error) => console.log("Error sending offer: ", error));
 	};
@@ -94,7 +94,7 @@ const handleSessionDescription = (config) => {
 									peer_id,
 									session_description: localDescription,
 								}),
-							() => App.setToast("Answer setLocalDescription failed!")
+							() => console.log("Answer setLocalDescription failed!")
 						);
 					},
 					(error) => console.log("Error creating answer: ", error)
@@ -178,29 +178,16 @@ function setupLocalMedia(callback) {
 		return;
 	}
 
-	// Build constraints based on pre-call settings
-	const constraints = {};
-
-	if (App.audioEnabled) {
-		constraints.audio = { deviceId: App.selectedAudioDeviceId };
-	}
-
-	if (App.videoEnabled) {
-		constraints.video = { deviceId: App.selectedVideoDeviceId };
-	}
+	// Build constraints based on settings
+	const constraints = {
+		audio: App.audioEnabled ? (App.selectedAudioDeviceId ? { deviceId: App.selectedAudioDeviceId } : true) : false,
+		video: App.videoEnabled ? (App.selectedVideoDeviceId ? { deviceId: App.selectedVideoDeviceId } : true) : false,
+	};
 
 	navigator.mediaDevices
 		.getUserMedia(constraints)
 		.then((stream) => {
 			App.localMediaStream = stream;
-
-			// Apply the pre-call enabled/disabled settings to the tracks
-			if (stream.getAudioTracks().length > 0) {
-				stream.getAudioTracks()[0].enabled = App.audioEnabled;
-			}
-			if (stream.getVideoTracks().length > 0) {
-				stream.getVideoTracks()[0].enabled = App.videoEnabled;
-			}
 
 			if (callback) callback();
 		})

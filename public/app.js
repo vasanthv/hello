@@ -62,22 +62,6 @@ const App = Vue.createApp({
 		},
 	},
 	watch: {
-		selectedAudioDeviceId(newDeviceId, oldDeviceId) {
-			if (!this.callInitiated && newDeviceId !== oldDeviceId) {
-				this.getPreCallMedia();
-			}
-			if (newDeviceId !== oldDeviceId && this.callInitiated) {
-				this.switchAudioDevice(newDeviceId);
-			}
-		},
-		selectedVideoDeviceId(newDeviceId, oldDeviceId) {
-			if (!this.callInitiated && newDeviceId !== oldDeviceId) {
-				this.getPreCallMedia();
-			}
-			if (newDeviceId !== oldDeviceId && this.callInitiated) {
-				this.switchVideoDevice(newDeviceId);
-			}
-		},
 		callInitiated(newValue, oldValue) {
 			if (oldValue && !newValue) {
 				// Call ended, clean up screen sharing
@@ -108,22 +92,11 @@ const App = Vue.createApp({
 
 			const existingTrack = this.localMediaStream[getTracks]()[0];
 
-			if (existingTrack) {
-				existingTrack.enabled = !existingTrack.enabled;
-				this[enabledKey] = existingTrack.enabled;
-			} else if (this[enabledKey]) {
-				try {
-					const constraints =
-						kind === "audio"
-							? { audio: { deviceId: { exact: this[selectedDeviceIdKey] } }, video: false }
-							: { audio: false, video: { deviceId: { exact: this[selectedDeviceIdKey] } } };
-					const newStream = await navigator.mediaDevices.getUserMedia(constraints);
-					const newTrack = newStream[getTracks]()[0];
-					this[replaceTrackMethod](newTrack);
-				} catch {
-					this.setToast(`Failed to enable ${kind}`);
-					this[enabledKey] = false;
-				}
+			if (existingTrack && this[enabledKey]) {
+				existingTrack.enabled = false;
+				this[enabledKey] = false;
+				existingTrack.stop();
+				this.removeMediaTrack(kind);
 			} else {
 				try {
 					const constraints =
@@ -177,6 +150,29 @@ const App = Vue.createApp({
 				const oldTrack = this.localMediaStream[getTracks]()[0];
 				if (oldTrack) this.localMediaStream.removeTrack(oldTrack);
 				this.localMediaStream.addTrack(newTrack);
+			}
+		},
+		removeMediaTrack(kind) {
+			// kind: "video" or "audio"
+			const blankTrack = this.getBlankTrack(kind);
+			if (!blankTrack) return;
+
+			// Replace track in all peer connections
+			Object.keys(this.peers).forEach((peerId) => {
+				const peerConnection = this.peers[peerId].rtc;
+				const senders = peerConnection.getSenders();
+				const sender = senders.find((s) => s.track && s.track.kind === kind);
+				if (sender) {
+					sender.replaceTrack(blankTrack);
+				}
+			});
+
+			// Replace in localMediaStream
+			if (this.localMediaStream) {
+				const getTracks = kind === "audio" ? "getAudioTracks" : "getVideoTracks";
+				const oldTrack = this.localMediaStream[getTracks]()[0];
+				if (oldTrack) this.localMediaStream.removeTrack(oldTrack);
+				this.localMediaStream.addTrack(blankTrack);
 			}
 		},
 		async triggerRenegotiation(peerId) {
@@ -344,7 +340,6 @@ const App = Vue.createApp({
 		initiateCall() {
 			if (!this.channelId) return alert("Invalid channel id");
 			if (!this.name) return alert("Please enter your name");
-			if (!this.videoEnabled && !this.audioEnabled) return alert("Please enable either audio or video");
 			this.callInitiated = true;
 			this.showExtraControls - false;
 			window.initiateCall();
@@ -360,7 +355,7 @@ const App = Vue.createApp({
 		copyURL() {
 			navigator.clipboard.writeText(`${window.location.origin}/${this.channelId}`).then(
 				() => this.setToast("Channel URL copied 👍", "success"),
-				() => this.setToast("Unable to copy channel URL")
+				() => console.error("Unable to copy channel URL")
 			);
 		},
 		toggleAudio() {
@@ -522,6 +517,29 @@ const App = Vue.createApp({
 				console.error("Failed to initialize media devices:", error);
 			}
 		},
+		getBlankTrack(kind) {
+			if (kind === "video") {
+				const width = 640,
+					height = 480;
+				const canvas = document.createElement("canvas");
+				canvas.width = width;
+				canvas.height = height;
+				const ctx = canvas.getContext("2d");
+				ctx.fillStyle = "black";
+				ctx.fillRect(0, 0, width, height);
+				const stream = canvas.captureStream(5);
+				return stream.getVideoTracks()[0];
+			} else if (kind === "audio") {
+				const ctx = new (window.AudioContext || window.webkitAudioContext)();
+				const oscillator = ctx.createOscillator();
+				const dst = ctx.createMediaStreamDestination();
+				oscillator.connect(dst);
+				oscillator.start();
+				oscillator.stop(ctx.currentTime + 0.01);
+				return dst.stream.getAudioTracks()[0];
+			}
+			return null;
+		},
 		async getPreCallMedia() {
 			try {
 				if (this.localMediaStream) {
@@ -539,11 +557,10 @@ const App = Vue.createApp({
 							: true
 						: false,
 				};
-				const stream = await navigator.mediaDevices.getUserMedia(constraints);
-				this.localMediaStream = stream;
+				this.localMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
 				const videoElem = document.getElementById("preCallVideo");
 				if (videoElem) {
-					videoElem.srcObject = stream;
+					videoElem.srcObject = this.localMediaStream;
 				}
 
 				// Enumerate devices once during pre-call flow if not already done
@@ -551,6 +568,15 @@ const App = Vue.createApp({
 					await this.enumerateDevices();
 				}
 			} catch {
+				// If user denies access, create blank tracks as needed
+				this.audioEnabled = false;
+				this.videoEnabled = false;
+				const tracks = [this.getBlankTrack("audio"), this.getBlankTrack("video")];
+				this.localMediaStream = new MediaStream(tracks);
+				const videoElem = document.getElementById("preCallVideo");
+				if (videoElem) {
+					videoElem.srcObject = this.localMediaStream;
+				}
 				this.setToast("Unable to access camera/mic");
 			}
 		},

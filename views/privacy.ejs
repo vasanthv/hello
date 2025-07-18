@@ -9,112 +9,115 @@
 			<div class="row title">Privacy policy</div>
 
 			<div class="row">
-				<p><strong>Effective Date:</strong> July 16, 2025<br /></p>
+				<p><strong>Effective Date:</strong> July 19, 2025<br /></p>
 
+				<h3>Our Privacy Promise</h3>
 				<p>
-					Ahey is a free, peer-to-peer video conferencing app. We care deeply about your privacy and collect only the
-					minimum information needed to make video calls work. You can use Ahey without signing up or registering.
+					Ahey is built with privacy by design. We collect minimal data, store nothing permanently, and use no tracking
+					or cookies. Your calls are peer-to-peer, meaning your video and audio go directly between participants, not
+					through our servers.
 				</p>
 
-				<h3>What We Collect</h3>
+				<h3>What Information We Collect</h3>
+				<ul>
+					<li><strong>Your name</strong> - You provide a display name when joining calls</li>
+					<li>
+						<strong>WebRTC connection data</strong> - Technical data needed to establish peer-to-peer connections (IP
+						addresses, connection details)
+					</li>
+					<li><strong>Access logs</strong> - Basic server logs for technical maintenance and security</li>
+				</ul>
+
+				<h3>How We Store Your Information</h3>
+				<ul>
+					<li><strong>Your name</strong> - Stored locally in your browser only, never sent to our servers</li>
+					<li>
+						<strong>WebRTC data</strong> - Temporarily stored on our servers only while you're connected to a channel
+					</li>
+					<li><strong>Access logs</strong> - Stored on our servers for 7 days, then automatically deleted</li>
+				</ul>
+
+				<h3>When Data Gets Deleted</h3>
+				<ul>
+					<li><strong>Immediately</strong> - WebRTC connection data is deleted as soon as you leave a call</li>
+					<li><strong>7 days</strong> - Access logs are automatically deleted after 7 days</li>
+					<li>
+						<strong>When you clear browser data</strong> - Your stored name is deleted if you clear your browser's local
+						storage
+					</li>
+				</ul>
+
+				<h3>What We Don't Do</h3>
+				<ul>
+					<li><strong>No call recording</strong> - We never record, store, or monitor your video/audio calls</li>
+					<li><strong>No tracking</strong> - We don't use analytics, tracking pixels, or behavioral tracking</li>
+					<li><strong>No cookies</strong> - We don't set any cookies on your device</li>
+					<li><strong>No data selling</strong> - We never sell, rent, or share your information with third parties</li>
+					<li><strong>No permanent accounts</strong> - We don't create user profiles or store account information</li>
+				</ul>
+
+				<h3>Third-Party Services</h3>
+				<p>Ahey uses minimal third-party services:</p>
+				<ul>
+					<li><strong>Domain hosting</strong> - Our domain and hosting providers may have their own logs</li>
+					<li><strong>STUN/TURN servers</strong> - Used to help establish peer-to-peer connections when needed</li>
+				</ul>
+
+				<h3>Embedded Calls</h3>
+				<p>When Ahey is embedded on other websites:</p>
+				<ul>
+					<li>The host website's privacy policy applies to their site</li>
+					<li>Ahey's privacy practices remain the same within the embedded frame</li>
+					<li>We don't share data with the host website</li>
+				</ul>
+
+				<h3>Open Source Transparency</h3>
 				<p>
-					Ahey does <strong>not</strong> require an account, login, or registration. However, we handle a small amount
-					of temporary and technical data to enable video calls.
+					Ahey is open source software. You can review our code, data practices, and privacy implementation at
+					<a href="https://github.com/vasanthv/ahey">https://github.com/vasanthv/ahey</a>.
 				</p>
 
-				<h3>We temporarily handle:</h3>
+				<h3>Data Security</h3>
 				<ul>
-					<li>
-						<strong>WebRTC ICE candidates</strong>: Used to connect you with other peers in the same channel. These are
-						stored in memory on the signaling server <strong>only while you are in a call</strong>, and are
-						<strong>deleted immediately</strong> when you leave.
-					</li>
+					<li><strong>Encrypted connections</strong> - All data is transmitted over HTTPS</li>
+					<li><strong>Peer-to-peer encryption</strong> - WebRTC provides built-in encryption for your calls</li>
+					<li><strong>Minimal attack surface</strong> - We store almost no data, so there's little to compromise</li>
 				</ul>
 
-				<h3>We store locally:</h3>
+				<h3>Your Rights</h3>
 				<ul>
 					<li>
-						<strong>Name</strong> (if you provide one): This is saved
-						<strong>only in your browser's local storage</strong> to identify you during a call. It never leaves your
-						device or gets sent to our server.
+						<strong>Access</strong> - You can see what name you've stored by checking your browser's local storage
 					</li>
+					<li><strong>Delete</strong> - Clear your browser data to remove your stored name</li>
+					<li><strong>Portability</strong> - Your name is stored locally and easily transferable</li>
+					<li><strong>No profiling</strong> - We don't create profiles, so there's nothing to correct or update</li>
 				</ul>
-
-				<h3>Access Logs:</h3>
-				<ul>
-					<li>
-						Like most web servers, we maintain basic <strong>access logs</strong> (e.g., IP address, time of access,
-						user agent) for security and operational reasons. These logs are stored securely and are not used for
-						tracking or analytics.
-					</li>
-				</ul>
-
-				<h3>How Calls Work</h3>
-				<ul>
-					<li>
-						Video and audio streams are handled by <strong>WebRTC</strong>, which connects users
-						<strong>directly</strong> in a peer-to-peer mesh.
-					</li>
-					<li>
-						We use <strong>Socket.IO</strong> as a signaling mechanism to exchange ICE candidates and set up the WebRTC
-						connections.
-					</li>
-					<li>
-						Once connected, communication happens directly between participants. Our server is not involved in the call
-						content.
-					</li>
-				</ul>
-				<p>We do <strong>not</strong> record, log, or store any video, audio, or chat data.</p>
-
-				<h3>Channel Privacy</h3>
-				<p>
-					Channels are public and open - anyone with the link can join.<br />
-					For privacy, we recommend using a <strong>unique or hard-to-guess channel name</strong>.
-				</p>
-				<p>
-					Example:<br />
-					<code>https://ahey.net/team-sync-4x9pzq</code>
-				</p>
-
-				<h3>Cookies and Tracking</h3>
-				<p>We do <strong>not</strong> use:</p>
-				<ul>
-					<li>Cookies</li>
-					<li>Analytics</li>
-					<li>Tracking scripts</li>
-					<li>Fingerprinting or profiling</li>
-				</ul>
-
-				<h3>Data Retention</h3>
-				<ul>
-					<li>ICE candidates are held <strong>temporarily</strong> and cleared when users leave a call.</li>
-					<li>Names remain in your browser's local storage and are never sent to our servers.</li>
-					<li>Access logs are kept for a limited period for operational and security reasons, then deleted.</li>
-				</ul>
-
-				<h3>Open Source</h3>
-				<p>
-					Ahey is a fully <strong>open source</strong> project. You can inspect, audit, or contribute to the code on our
-					public repository.<br />
-					Repository: <a href="https://github.com/vasanthv/ahey">https://github.com/vasanthv/ahey</a>
-				</p>
 
 				<h3>Children's Privacy</h3>
 				<p>
-					Ahey is not intended for children under the age of 13. We do not knowingly collect or store data from minors.
+					Ahey is intended for users 13 and older. We don't knowingly collect information from children under 13. If you
+					believe a child has used Ahey, please contact us.
+				</p>
+
+				<h3>International Users</h3>
+				<p>
+					Ahey works globally. Your WebRTC data may be processed in the country where our servers are located, but it's
+					deleted immediately when you leave calls.
 				</p>
 
 				<h3>Changes to This Policy</h3>
 				<p>
-					If we make changes to this Privacy Policy, we'll update the “Effective Date” above. Since we don't collect
-					your contact info, we can't notify you directly. Please check this page for the latest version.
+					We may update this privacy policy. We'll post changes here and update the date above. Continued use means you
+					accept any changes.
 				</p>
 
-				<h3>Contact</h3>
-				<p>
-					For questions or concerns about this policy, you can contact us at:<br />
-					📧 <a href="mailto:hello@ahey.net">hello@ahey.net</a>
-				</p>
+				<h3>Contact Us</h3>
+				<p>Questions about privacy? Email us at <a href="mailto:hello@ahey.net">hello@ahey.net</a></p>
+
+				<hr />
+
+				<p><em>Privacy first. Always.</em></p>
 			</div>
 
 			<%- include('footer'); -%>

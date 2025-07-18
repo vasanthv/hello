@@ -23,7 +23,13 @@ app.use(express.static(path.join(__dirname, "public/icons")));
 app.use(express.static(path.join(__dirname, "public"), { maxAge: 0 })); // No cache for www
 
 // Initialize Socket.IO and attach signalling server logic
-const io = socketIO(server);
+const io = socketIO(server, {
+	cors: {
+		origin: config.CORS_ORIGIN,
+		methods: ["GET", "POST"],
+		credentials: true,
+	},
+});
 io.sockets.on("connection", signallingServer);
 
 app.use("/", routes);
