@@ -509,15 +509,15 @@ const App = Vue.createApp({
 			try {
 				const devices = await navigator.mediaDevices.enumerateDevices();
 
-				App.audioDevices = devices.filter((device) => device.kind === "audioinput");
-				App.videoDevices = devices.filter((device) => device.kind === "videoinput");
+				this.audioDevices = devices.filter((device) => device.kind === "audioinput");
+				this.videoDevices = devices.filter((device) => device.kind === "videoinput");
 
 				// Set default device ids
-				const defaultAudioDeviceId = App.audioDevices.find((device) => device.deviceId == "default")?.deviceId;
-				const defaultVideoDeviceId = App.videoDevices.find((device) => device.deviceId == "default")?.deviceId;
+				const defaultAudioDeviceId = this.audioDevices.find((device) => device.deviceId == "default")?.deviceId;
+				const defaultVideoDeviceId = this.videoDevices.find((device) => device.deviceId == "default")?.deviceId;
 
-				App.selectedAudioDeviceId = defaultAudioDeviceId ?? App.audioDevices[0]?.deviceId;
-				App.selectedVideoDeviceId = defaultVideoDeviceId ?? App.videoDevices[0]?.deviceId;
+				this.selectedAudioDeviceId = defaultAudioDeviceId ?? this.audioDevices[0]?.deviceId;
+				this.selectedVideoDeviceId = defaultVideoDeviceId ?? this.videoDevices[0]?.deviceId;
 			} catch (error) {
 				console.error("Failed to initialize media devices:", error);
 			}
