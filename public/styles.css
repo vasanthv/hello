@@ -354,12 +354,21 @@ footer a {
 	}
 	#videos.layout-2 {
 		grid-template-columns: 1fr;
-		grid-template-rows: auto;
+		grid-template-rows: 1fr 1fr;
 	}
-	#videos.layout-3,
-	#videos.layout-4,
+	#videos.layout-3 {
+		grid-template-columns: 1fr;
+		grid-template-rows: 1fr 1fr 1fr;
+	}
+	#videos.layout-4 {
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 1fr 1fr;
+	}
 	#videos.layout-5,
-	#videos.layout-6,
+	#videos.layout-6 {
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 1fr 1fr 1fr;
+	}
 	#videos.layout-7-plus {
 		grid-template-columns: 1fr 1fr;
 		grid-template-rows: auto;
