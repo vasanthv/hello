@@ -1,12 +1,13 @@
 {
 	"name": "ahey",
-	"version": "2.0.1",
+	"version": "2.0.2",
 	"description": "A free group video conference app for the web. No sign ups. No downloads.",
 	"main": "init.js",
 	"scripts": {
 		"start": "node ./scripts/pre-start.js && node init.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"format:ejs": "prettier --write \"views/**/*.ejs\""
+		"format:ejs": "prettier --write \"views/**/*.ejs\"",
+		"docker": "docker build -t ahey . && docker run -p 824:824 ahey"
 	},
 	"author": "",
 	"license": "ISC",
@@ -14,8 +15,7 @@
 		"ejs": "^3.1.10",
 		"express": "^4.19.2",
 		"socket.io": "^4.7.5",
-		"vue": "^3.4.31",
-		"webrtc-adapter": "^9.0.1"
+		"vue": "^3.4.31"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.1.0",
