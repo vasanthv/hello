@@ -3,7 +3,6 @@ const { isValidChannelName } = require("./utils");
 const router = require("express").Router();
 
 const STATIC_VIEWS = {
-	faq: "Frequently asked questions",
 	privacy: "Privacy policy",
 	terms: "Terms of service",
 };
@@ -11,7 +10,7 @@ const STATIC_VIEWS = {
 // Route: Home page
 router.get("/", (req, res) => res.render("index", { page: "index", title: "A free video chat for the web." }));
 
-// MIddleware: Static views (faq, privacy, etc.)
+// MIddleware: Static views (terms, privacy, etc.)
 router.use("/:view", (req, res, next) => {
 	const view = req.params.view;
 	if (STATIC_VIEWS[view]) {
