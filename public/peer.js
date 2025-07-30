@@ -51,7 +51,16 @@ const setupPeerConnectionHandlers = (peerConnection, peer_id) => {
 const addLocalTracksToPeer = (peerConnection) => {
 	if (App.localMediaStream) {
 		App.localMediaStream.getTracks().forEach((track) => {
-			peerConnection.addTrack(track, App.localMediaStream);
+			const sender = peerConnection.addTrack(track, App.localMediaStream);
+			// Set codec preferences for video tracks if supported
+			if (track.kind === "video" && window.RTCRtpSender && RTCRtpSender.getCapabilities) {
+				const codecs = RTCRtpSender.getCapabilities("video").codecs;
+				const preferredCodecs = codecs.filter((codec) => codec.mimeType === "video/H264");
+				const transceiver = peerConnection.getTransceivers().find((t) => t.sender === sender);
+				if (transceiver && transceiver.setCodecPreferences && preferredCodecs.length) {
+					transceiver.setCodecPreferences(preferredCodecs);
+				}
+			}
 		});
 	}
 };
