@@ -9,8 +9,13 @@ window.ICE_SERVERS = [
 	{ urls: "stun:stun3.l.google.com:19302" },
 	{ urls: "stun:stun4.l.google.com:19302" },
 	{ urls: "stun:stun.relay.metered.ca:80" },
+	{ urls: "stun:turn.ahey.net:3478" },
 
-	// TURN servers
+	// TURN servers are needed as a fallback relay server when direct peer-to-peer communication isn’t possible.
+	// It relays data between peers, ensuring connectivity even in restrictive network conditions.
+	// $TURN_SERVER
+
+	// Fallback TURN servers
 	{ urls: "turn:global.relay.metered.ca:80", username: "3ba485bee1f0b3b6cb46958b", credential: "OCJtcDPtoOQhNvur" },
 	{
 		urls: "turn:global.relay.metered.ca:80?transport=tcp",
