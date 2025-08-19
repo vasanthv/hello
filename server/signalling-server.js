@@ -14,17 +14,14 @@ const signallingServer = (socket) => {
 	socket.channels = {};
 	sockets[socket.id] = socket;
 
-	console.log("[" + socket.id + "] connection accepted");
 	socket.on("disconnect", () => {
 		for (const channel in socket.channels) {
 			part(channel);
 		}
-		console.log("[" + socket.id + "] disconnected");
 		delete sockets[socket.id];
 	});
 
 	socket.on("join", (config) => {
-		console.log("[" + socket.id + "] joined. Channel: ", config.channel);
 		const channel = config.channel;
 
 		// Already Joined
@@ -47,6 +44,9 @@ const signallingServer = (socket) => {
 
 		channels[channel][socket.id] = socket;
 		socket.channels[channel] = channel;
+
+		const numPeers = Object.keys(peers[channel]).length;
+		console.log("joined channel=" + channel + " peers=" + numPeers);
 	});
 
 	socket.on("updateUserData", async (config) => {
@@ -68,7 +68,10 @@ const signallingServer = (socket) => {
 		delete channels[channel][socket.id];
 
 		delete peers[channel][socket.id];
-		if (Object.keys(peers[channel]).length == 0) {
+
+		const remainingPeers = Object.keys(peers[channel]).length;
+		console.log("left channel=" + channel + " peers=" + remainingPeers);
+		if (remainingPeers == 0) {
 			// last peer disconnected from the channel
 			delete peers[channel];
 		}
