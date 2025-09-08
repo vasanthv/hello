@@ -54,15 +54,9 @@ textarea {
 	min-height: 2rem;
 }
 footer {
-	margin: 1rem;
-}
-footer section {
-	margin: 1rem auto;
-	text-align: center;
-}
-footer .flex {
 	display: flex;
 	justify-content: space-between;
+	margin: 1rem;
 }
 footer a {
 	margin: 0px 0.5rem;
@@ -354,19 +348,6 @@ footer a {
 	background: var(--controls-active);
 }
 
-#blarb {
-	display: block;
-	border: 0.1rem solid var(--text);
-	padding: 0.4rem 1rem;
-	box-sizing: border-box;
-	width: 100%;
-	max-width: 320px;
-	margin: 2rem auto 1rem;
-	line-height: 1.1;
-	text-decoration: none;
-	border-radius: 0.5rem;
-}
-
 @media only screen and (max-width: 600px) {
 	html {
 		font-size: 1rem;
@@ -392,7 +373,7 @@ footer a {
 		grid-template-columns: 1fr 1fr;
 		grid-template-rows: auto;
 	}
-	footer .flex {
+	footer {
 		flex-direction: column;
 		gap: 2rem;
 	}
