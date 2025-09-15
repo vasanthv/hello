@@ -40,11 +40,13 @@ const App = Vue.createApp({
 	},
 	computed: {
 		peersArray() {
-			return Object.keys(this.peers).map((peer) => ({
-				stream: this.peers[peer].stream,
-				name: this.peers[peer].data.peerName,
-				isTalking: this.peers[peer].data.isTalking,
-			}));
+			return Object.keys(this.peers)
+				.filter((p) => this.peers[p].data.userAgent)
+				.map((peer) => ({
+					stream: this.peers[peer].stream,
+					name: this.peers[peer].data.peerName,
+					isTalking: this.peers[peer].data.isTalking,
+				}));
 		},
 		screenShareSupported() {
 			return navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia;

@@ -1,6 +1,6 @@
 {
 	"name": "ahey",
-	"version": "2.0.10",
+	"version": "2.0.11",
 	"description": "A free group video conference app for the web. No sign ups. No downloads.",
 	"main": "init.js",
 	"scripts": {
