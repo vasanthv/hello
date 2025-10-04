@@ -354,19 +354,6 @@ footer a {
 	background: var(--controls-active);
 }
 
-#blarb {
-	display: block;
-	border: 0.1rem solid var(--text);
-	padding: 0.4rem 1rem;
-	box-sizing: border-box;
-	width: 100%;
-	max-width: 320px;
-	margin: 2rem auto 1rem;
-	line-height: 1.1;
-	text-decoration: none;
-	border-radius: 0.5rem;
-}
-
 @media only screen and (max-width: 600px) {
 	html {
 		font-size: 1rem;
