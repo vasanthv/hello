@@ -1,55 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-	<%- include('head'); -%>
+<%- include('head'); -%>
 
-	<body>
-		<div class="wrap">
-			<br />
-			<div class="row title">Ahey - a free video call app for the web.</div>
-			<div class="row">
-				<p>
-					Ahey is a frictionless, peer-to-peer video conferencing app you can use right in your browser - no sign-ups,
-					no downloads, no limits.
-				</p>
-				<p>
-					Just share your channel URL with friends and connect instantly. 100% free, embeddable on any webpage, and
-					ready to use.
-				</p>
-			</div>
+<body>
+  <div class="wrap">
+    <br />
+    <div class="row title">Hello - a free video call app for the web.</div>
+    <div class="row">
+      <p>
+        Hello is a frictionless, peer-to-peer video conferencing app you can use right in your browser - no sign-ups,
+        no downloads, no limits.
+      </p>
+      <p>
+        Just share your channel URL with friends and connect instantly. 100% free, embeddable on any webpage, and
+        ready to use.
+      </p>
+    </div>
 
-			<div class="row">
-				<div id="channelbox" class="flex">
-					<span class="perma-placeholder">ahey.net/</span>
-					<input type="text" placeholder="channel-id" class="flex-1" />
-					<button onClick="onJoin()">Start</button>
-				</div>
-				<div class="small light">Entering a channel ID is optional - click "Start" to generate a random channel.</div>
-			</div>
+    <div class="row">
+      <div id="channelbox" class="flex">
+        <span class="perma-placeholder">/</span>
+        <input type="text" placeholder="channel-id" class="flex-1" />
+        <button onClick="onJoin()">Start</button>
+      </div>
+      <div class="small light">Entering a channel ID is optional - click "Start" to generate a random channel.</div>
+    </div>
 
-			<script type="text/javascript">
-				const inputElement = document.querySelector("#channelbox input");
-				function onJoin() {
-					let channelId = document.querySelector("#channelbox input").value;
-					if (!channelId) channelId = Math.random().toString(36).substr(2, 6);
+    <script type="text/javascript">
+      const inputElement = document.querySelector("#channelbox input");
 
-					window.location.pathname = channelId;
-				}
+      function onJoin() {
+        let channelId = document.querySelector("#channelbox input").value;
+        if (!channelId) channelId = Math.random().toString(36).substr(2, 6);
 
-				inputElement.addEventListener("keypress", function (e) {
-					if (e.key === "Enter") {
-						e.preventDefault();
-						onJoin();
-					}
-				});
+        window.location.pathname = channelId;
+      }
 
-				(() => {
-					if ("serviceWorker" in navigator) {
-						navigator.serviceWorker.register("/sw.js");
-					}
-				})();
-			</script>
+      inputElement.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          onJoin();
+        }
+      });
 
-			<%- include('footer'); -%>
-		</div>
-	</body>
+      (() => {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("/sw.js");
+        }
+      })();
+    </script>
+
+    <%- include('footer'); -%>
+  </div>
+</body>
+
 </html>

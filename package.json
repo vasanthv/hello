@@ -1,5 +1,5 @@
 {
-	"name": "ahey",
+	"name": "hello",
 	"version": "2.0.11",
 	"description": "A free group video conference app for the web. No sign ups. No downloads.",
 	"main": "init.js",
@@ -7,7 +7,7 @@
 		"start": "node ./scripts/pre-start.js && node init.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"format:ejs": "prettier --write \"views/**/*.ejs\"",
-		"docker": "docker build -t ahey . && docker run -p 824:824 ahey"
+		"docker": "docker build -t hello . && docker run -p 824:824 hello"
 	},
 	"author": "",
 	"license": "ISC",
