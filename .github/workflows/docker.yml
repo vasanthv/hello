@@ -1,0 +1,43 @@
+name: Build and push talk Docker image
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Login to ghcr.io
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      # Runs a single command using the runners shell
+      - name: Build and push Docker images to docker.io and ghcr.io
+        uses: docker/build-push-action@v2
+        with:
+          file: './Dockerfile'
+          platforms: linux/amd64
+          context: ./
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/talk:latest
+            ghcr.io/${{ github.repository_owner }}/talk:latest
